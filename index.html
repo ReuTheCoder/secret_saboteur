@@ -261,7 +261,52 @@ input{
 
 <script>
 /* --- DATA --- */
-const prompts=[ /* ~60 prompts inserted here exactly as requested */ ];
+const prompts = [
+  { title: "Reasons to call 911", low: "Reasonable", high: "Ridiculous" },
+  { title: "Places to nap", low: "Very comfortable", high: "Very uncomfortable" },
+  { title: "Cool for a high-schooler", low: "Not cool", high: "Cool" },
+  { title: "Things to discover in your pocket", low: "Exciting", high: "Not exciting" },
+  { title: "Last words", low: "Forgettable", high: "Memorable" },
+  { title: "Movies", low: "Relaxing", high: "Intense" },
+  { title: "TV shows", low: "Serious", high: "Relaxing" },
+  { title: "Food to eat at 7am", low: "Good", high: "Bad" },
+  { title: "Places for summer vacation", low: "Worst", high: "Best" },
+  { title: "Times to do homework", low: "Good", high: "Bad" },
+
+  { title: "Excuses to leave a party early", low: "Believable", high: "Unbelievable" },
+  { title: "Things you should never Google", low: "Harmless", high: "Traumatizing" },
+  { title: "Things that ruin your day", low: "Minor", high: "Devastating" },
+  { title: "Reasons to cancel plans", low: "Acceptable", high: "Unforgivable" },
+  { title: "School supplies", low: "Useless", high: "Essential" },
+  { title: "Ways to get suspended", low: "Understandable", high: "Stupid" },
+  { title: "Things to do in class when bored", low: "Quiet", high: "Disruptive" },
+  { title: "Clubs to join", low: "Boring", high: "Fun" },
+  { title: "Times to laugh", low: "Appropriate", high: "Inappropriate" },
+  { title: "Things to accidentally text your teacher", low: "Fine", high: "Horrifying" },
+
+  { title: "Icebreakers", low: "Boring", high: "Painfully awkward" },
+  { title: "Foods to bring to a potluck", low: "Welcomed", high: "Questioned" },
+  { title: "Midnight snacks", low: "Normal", high: "Concerning" },
+  { title: "Foods to eat in class", low: "Stealthy", high: "Obvious" },
+  { title: "Foods that should never be microwaved", low: "Bad", high: "War crime" },
+  { title: "Restaurant orders", low: "Safe", high: "Risky" },
+  { title: "Places to sit", low: "Comfortable", high: "Miserable" },
+  { title: "Sounds to fall asleep to", low: "Soothing", high: "Unbearable" },
+  { title: "Clothes to sleep in", low: "Comfy", high: "A mistake" },
+  { title: "Weather to walk in", low: "Pleasant", high: "Brutal" },
+
+  { title: "Times to wake up", low: "Ideal", high: "Cruel" },
+  { title: "Things to yell in a library", low: "Quiet", high: "Unacceptable" },
+  { title: "Places to lose your phone", low: "Recoverable", high: "Hopeless" },
+  { title: "Ways to get famous", low: "Respectable", high: "Infamous" },
+  { title: "Lies", low: "Believable", high: "Terrible" },
+  { title: "Secrets", low: "Harmless", high: "Life-ruining" },
+  { title: "Bad ideas", low: "Questionable", high: "Catastrophic" },
+  { title: "Social mistakes", low: "Forgivable", high: "Unforgettable" },
+  { title: "Times to leave", low: "Polite", high: "Dramatic" },
+  { title: "Things to do instead of studying", low: "Understandable", high: "Irresponsible" }
+];
+
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
 
 /* --- FLOW --- */
