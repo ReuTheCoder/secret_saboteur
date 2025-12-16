@@ -315,11 +315,11 @@ function show(id){
 }
 
 const grid=document.getElementById('playerGrid');
-for(let i=3;i<=10;i++){
-  const b=document.createElement('button');
-  b.className='player-btn';
-  b.innerHTML=`👥 ${i}`;
-  b.onclick=()=>selectPlayers(i);
+for(let i = 3; i <= 10; i++) {
+  const b = document.createElement('button');
+  b.className = 'player-btn';
+  b.textContent = i;
+  b.onclick = () => selectPlayers(i);
   grid.appendChild(b);
 }
 
