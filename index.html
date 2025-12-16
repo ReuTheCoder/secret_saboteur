@@ -1,13 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Secret Saboteur</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Secret Saboteur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #ffffff;
+      color: #212121;
+    }
+
+    .card {
+      max-width: 420px;
+      margin: 40px auto;
+      padding: 30px;
+      border-radius: 18px;
+      text-align: center;
+      background: #B2EBF2;
+    }
+
+    h1, h2 {
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #00BCD4;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      margin-top: 20px;
+      border-radius: 14px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .scale {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .scale div {
+      background: #00BCD4;
+      color: white;
+      padding: 10px 0;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const prompts = [
+  { text: "Reasons to call 911", min: "Reasonable", max: "Ridiculous" },
+  { text: "Places to nap", min: "Very comfortable", max: "Very uncomfortable" },
+  { text: "Cool for a high-schooler", min: "Not cool", max: "Cool" },
+  { text: "Things you should never Google", min: "Harmless", max: "Traumatizing" },
+  { text: "Ways to embarrass yourself", min: "Subtle", max: "Legendary" },
+  { text: "Foods that should never be microwaved", min: "Slightly bad", max: "A war crime" },
+  { text: "Places to lose your phone", min: "Recoverable", max: "Hopeless" },
+  { text: "Ways to get famous", min: "Respectable", max: "Infamous" },
+  { text: "Secrets", min: "Harmless", max: "Life-ruining" },
+  { text: "Times to do homework", min: "Good", max: "Bad" }
+];
+
+let state = {
+  screen: "lobby",
+  players: 4,
+  currentPlayer: 0,
+  prompt: null,
+  number: null,
+  roles: [],
+  guess: null
+};
+
+const app = document.getElementById("app");
+
+function render() {
+  app.innerHTML = "";
+  if (state.screen === "lobby") renderLobby();
+  if (state.screen === "roles") renderRoleReveal();
+  if (state.screen === "prompt") renderPrompt();
+  if (state.screen === "guess") renderGuess();
+  if (state.screen === "results") renderResults();
+}
+
+function renderLobby() {
+  app.innerHTML = `
+    <div class="card">
+      <h1>Secret Saboteur</h1>
+      <p>Select number of players</p>
+      <div>
+        <button onclick="changePlayers(-1)">−</button>
+        <span style="margin:0 20px;font-size:24px;font-weight:600">${state.players}</span>
+        <button onclick="changePlayers(1)">+</button>
+      </div>
+      <button onclick="startGame()">Start Game</button>
+    </div>
+  `;
+}
+
+function changePlayers(delta) {
+  state.players = Math.max(3, state.players + delta);
+  render();
+}
+
+function startGame() {
+  state.prompt = prompts[Math.floor(Math.random() * prompts.length)];
+  state.number = Math.floor(Math.random() * 10) + 1;
+  state.roles = Array(state.players).fill("Teammate");
+
+  const guesser = Math.floor(Math.random() * state.players);
+  let saboteur;
+  do {
+    saboteur = Math.floor(Math.random() * state.players);
+  } while (saboteur === guesser);
+
+  state.roles[guesser] = "Guesser";
+  state.roles[saboteur] = "Saboteur";
+
+  state.currentPlayer = 0;
+  state.screen = "roles";
+  render();
+}
+
+function renderRoleReveal() {
+  const role = state.roles[state.currentPlayer];
+  app.innerHTML = `
+    <div class="card">
+      <h1>Player ${state.currentPlayer + 1}</h1>
+      <button onclick="revealRole()">Reveal Role</button>
+    </div>
+  `;
+}
+
+function revealRole() {
+  const role = state.roles[state.currentPlayer];
+  app.innerHTML = `
+    <div class="card">
+      <h2>${role}</h2>
+      ${role !== "Guesser" ? `<p>Number: ${state.number}</p>` : ""}
+      <button onclick="nextPlayer()">Next Player</button>
+    </div>
+  `;
+}
+
+function nextPlayer() {
+  state.currentPlayer++;
+  if (state.currentPlayer >= state.players) {
+    state.screen = "prompt";
+  }
+  render();
+}
+
+function renderPrompt() {
+  app.innerHTML = `
+    <div class="card">
+      <h2>${state.prompt.text}</h2>
+      <div>
+        <div style="display:flex;justify-content:space-between">
+          <span>1 — ${state.prompt.min}</span>
+          <span>10 — ${state.prompt.max}</span>
+        </div>
+        <div class="scale">
+          ${Array.from({length:10},(_,i)=>`<div>${i+1}</div>`).join("")}
+        </div>
+      </div>
+      <p>Discuss out loud.</p>
+      <button onclick="goToGuess()">Guesser, make your guess</button>
+    </div>
+  `;
+}
+
+function goToGuess() {
+  state.screen = "guess";
+  render();
+}
+
+function renderGuess() {
+  app.innerHTML = `
+    <div class="card">
+      <h2>${state.prompt.text}</h2>
+      <div class="grid">
+        ${Array.from({length:10},(_,i)=>`
+          <button onclick="selectGuess(${i+1})">${i+1}</button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function selectGuess(n) {
+  state.guess = n;
+  state.screen = "results";
+  render();
+}
+
+function renderResults() {
+  const saboteur = state.roles.indexOf("Saboteur") + 1;
+  const guesser = state.roles.indexOf("Guesser") + 1;
+  app.innerHTML = `
+    <div class="card">
+      <h1>Results</h1>
+      <p><strong>Guesser guessed:</strong> ${state.guess}</p>
+      <p><strong>Correct number:</strong> ${state.number}</p>
+      <hr>
+      <p><strong>Guesser:</strong> Player ${guesser}</p>
+      <p><strong>Saboteur:</strong> Player ${saboteur}</p>
+    </div>
+  `;
+}
+
+render();
+</script>
+
+</body>
 </html>
