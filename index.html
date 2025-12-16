@@ -1,72 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Secret Saboteur</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: #ffffff;
-      color: #212121;
-    }
+<meta charset="UTF-8" />
+<title>Secret Saboteur</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
-    .card {
-      max-width: 420px;
-      margin: 40px auto;
-      padding: 30px;
-      border-radius: 18px;
-      text-align: center;
-      background: #B2EBF2;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  color: #212121;
+}
 
-    h1, h2 {
-      margin-bottom: 10px;
-    }
+header {
+  text-align: center;
+  padding: 10px;
+  font-weight: 600;
+}
 
-    button {
-      background: #00BCD4;
-      color: white;
-      border: none;
-      padding: 14px 20px;
-      margin-top: 20px;
-      border-radius: 14px;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: 600;
-    }
+.card {
+  max-width: 440px;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 20px;
+  background: #B2EBF2;
+  text-align: center;
+}
 
-    button:disabled {
-      opacity: 0.5;
-    }
+button {
+  background: #00BCD4;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  margin-top: 16px;
+  border-radius: 14px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      margin: 20px 0;
-    }
+button.secondary {
+  background: #0097A7;
+}
 
-    .scale {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
-      margin-top: 10px;
-    }
+button:disabled {
+  opacity: 0.5;
+}
 
-    .scale div {
-      background: #00BCD4;
-      color: white;
-      padding: 10px 0;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-  </style>
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin: 6px 0;
+  width: 100%;
+  font-size: 14px;
+}
+
+.scale {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.scale div {
+  background: #00BCD4;
+  color: white;
+  padding: 10px 0;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Flip card */
+.flip-container {
+  perspective: 1000px;
+}
+
+.flip-card {
+  width: 100%;
+  height: 220px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.flip-card.flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flip-front {
+  background: #00BCD4;
+  color: white;
+}
+
+.flip-back {
+  background: #0097A7;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 20px 0;
+}
+</style>
 </head>
-<body>
 
+<body>
+<header id="header"></header>
 <div id="app"></div>
 
 <script>
@@ -75,163 +132,184 @@ const prompts = [
   { text: "Places to nap", min: "Very comfortable", max: "Very uncomfortable" },
   { text: "Cool for a high-schooler", min: "Not cool", max: "Cool" },
   { text: "Things you should never Google", min: "Harmless", max: "Traumatizing" },
-  { text: "Ways to embarrass yourself", min: "Subtle", max: "Legendary" },
   { text: "Foods that should never be microwaved", min: "Slightly bad", max: "A war crime" },
-  { text: "Places to lose your phone", min: "Recoverable", max: "Hopeless" },
   { text: "Ways to get famous", min: "Respectable", max: "Infamous" },
   { text: "Secrets", min: "Harmless", max: "Life-ruining" },
-  { text: "Times to do homework", min: "Good", max: "Bad" }
+  { text: "Ways to embarrass yourself", min: "Subtle", max: "Legendary" }
 ];
 
 let state = {
   screen: "lobby",
   players: 4,
+  names: [],
   currentPlayer: 0,
-  prompt: null,
-  number: null,
   roles: [],
-  guess: null
+  number: null,
+  prompt: null,
+  guess: null,
+  flipped: false,
+  round: 1
 };
 
 const app = document.getElementById("app");
+const header = document.getElementById("header");
+
+function renderHeader() {
+  header.innerHTML = state.screen !== "lobby"
+    ? `Round ${state.round}`
+    : "";
+}
 
 function render() {
+  renderHeader();
   app.innerHTML = "";
   if (state.screen === "lobby") renderLobby();
-  if (state.screen === "roles") renderRoleReveal();
+  if (state.screen === "roles") renderRole();
   if (state.screen === "prompt") renderPrompt();
   if (state.screen === "guess") renderGuess();
   if (state.screen === "results") renderResults();
 }
 
+/* Lobby */
 function renderLobby() {
   app.innerHTML = `
     <div class="card">
       <h1>Secret Saboteur</h1>
-      <p>Select number of players</p>
-      <div>
-        <button onclick="changePlayers(-1)">−</button>
-        <span style="margin:0 20px;font-size:24px;font-weight:600">${state.players}</span>
-        <button onclick="changePlayers(1)">+</button>
-      </div>
+      <p>Number of players</p>
+      <button onclick="adjustPlayers(-1)">−</button>
+      <strong style="margin:0 16px">${state.players}</strong>
+      <button onclick="adjustPlayers(1)">+</button>
+      <div id="names"></div>
       <button onclick="startGame()">Start Game</button>
     </div>
   `;
+  renderNameInputs();
 }
 
-function changePlayers(delta) {
-  state.players = Math.max(3, state.players + delta);
+function adjustPlayers(d) {
+  state.players = Math.max(3, state.players + d);
   render();
 }
 
+function renderNameInputs() {
+  const namesDiv = document.getElementById("names");
+  namesDiv.innerHTML = "";
+  state.names = state.names.slice(0, state.players);
+  for (let i = 0; i < state.players; i++) {
+    state.names[i] ||= `Player ${i + 1}`;
+    namesDiv.innerHTML += `<input value="${state.names[i]}"
+      oninput="state.names[${i}]=this.value">`;
+  }
+}
+
+/* Game setup */
 function startGame() {
   state.prompt = prompts[Math.floor(Math.random() * prompts.length)];
   state.number = Math.floor(Math.random() * 10) + 1;
   state.roles = Array(state.players).fill("Teammate");
 
   const guesser = Math.floor(Math.random() * state.players);
-  let saboteur;
-  do {
-    saboteur = Math.floor(Math.random() * state.players);
-  } while (saboteur === guesser);
+  let sab;
+  do { sab = Math.floor(Math.random() * state.players); } while (sab === guesser);
 
   state.roles[guesser] = "Guesser";
-  state.roles[saboteur] = "Saboteur";
+  state.roles[sab] = "Saboteur";
 
   state.currentPlayer = 0;
+  state.flipped = false;
   state.screen = "roles";
   render();
 }
 
-function renderRoleReveal() {
+/* Role reveal */
+function renderRole() {
+  const name = state.names[state.currentPlayer];
   const role = state.roles[state.currentPlayer];
   app.innerHTML = `
-    <div class="card">
-      <h1>Player ${state.currentPlayer + 1}</h1>
-      <button onclick="revealRole()">Reveal Role</button>
+    <div class="card flip-container">
+      <div class="flip-card ${state.flipped ? "flipped" : ""}">
+        <div class="flip-face flip-front">
+          <h2>${name}</h2>
+          <p>Tap to reveal</p>
+        </div>
+        <div class="flip-face flip-back">
+          <h2>${role}</h2>
+          ${role !== "Guesser" ? `<p>Number: ${state.number}</p>` : ""}
+        </div>
+      </div>
+      <button onclick="flipCard()">Flip</button>
+      ${state.flipped ? `<button onclick="nextPlayer()" class="secondary">Next Player</button>` : ""}
     </div>
   `;
 }
 
-function revealRole() {
-  const role = state.roles[state.currentPlayer];
-  app.innerHTML = `
-    <div class="card">
-      <h2>${role}</h2>
-      ${role !== "Guesser" ? `<p>Number: ${state.number}</p>` : ""}
-      <button onclick="nextPlayer()">Next Player</button>
-    </div>
-  `;
+function flipCard() {
+  state.flipped = !state.flipped;
+  render();
 }
 
 function nextPlayer() {
   state.currentPlayer++;
-  if (state.currentPlayer >= state.players) {
-    state.screen = "prompt";
-  }
+  state.flipped = false;
+  if (state.currentPlayer >= state.players) state.screen = "prompt";
   render();
 }
 
+/* Prompt */
 function renderPrompt() {
   app.innerHTML = `
     <div class="card">
       <h2>${state.prompt.text}</h2>
-      <div>
-        <div style="display:flex;justify-content:space-between">
-          <span>1 — ${state.prompt.min}</span>
-          <span>10 — ${state.prompt.max}</span>
-        </div>
-        <div class="scale">
-          ${Array.from({length:10},(_,i)=>`<div>${i+1}</div>`).join("")}
-        </div>
+      <div class="scale">
+        ${Array.from({length:10},(_,i)=>`<div>${i+1}</div>`).join("")}
       </div>
-      <p>Discuss out loud.</p>
-      <button onclick="goToGuess()">Guesser, make your guess</button>
+      <p>1 — ${state.prompt.min} | 10 — ${state.prompt.max}</p>
+      <button onclick="state.screen='guess';render()">Guesser, make your guess</button>
     </div>
   `;
 }
 
-function goToGuess() {
-  state.screen = "guess";
-  render();
-}
-
+/* Guess */
 function renderGuess() {
   app.innerHTML = `
     <div class="card">
       <h2>${state.prompt.text}</h2>
       <div class="grid">
-        ${Array.from({length:10},(_,i)=>`
-          <button onclick="selectGuess(${i+1})">${i+1}</button>
-        `).join("")}
+        ${Array.from({length:10},(_,i)=>`<button onclick="makeGuess(${i+1})">${i+1}</button>`).join("")}
       </div>
     </div>
   `;
 }
 
-function selectGuess(n) {
+function makeGuess(n) {
   state.guess = n;
   state.screen = "results";
   render();
 }
 
+/* Results */
 function renderResults() {
-  const saboteur = state.roles.indexOf("Saboteur") + 1;
-  const guesser = state.roles.indexOf("Guesser") + 1;
+  const g = state.roles.indexOf("Guesser");
+  const s = state.roles.indexOf("Saboteur");
   app.innerHTML = `
     <div class="card">
       <h1>Results</h1>
-      <p><strong>Guesser guessed:</strong> ${state.guess}</p>
-      <p><strong>Correct number:</strong> ${state.number}</p>
-      <hr>
-      <p><strong>Guesser:</strong> Player ${guesser}</p>
-      <p><strong>Saboteur:</strong> Player ${saboteur}</p>
+      <p><strong>Guesser:</strong> ${state.names[g]}</p>
+      <p><strong>Saboteur:</strong> ${state.names[s]}</p>
+      <p><strong>Guess:</strong> ${state.guess}</p>
+      <p><strong>Correct:</strong> ${state.number}</p>
+      <button onclick="playAgain()">Play Again</button>
     </div>
   `;
 }
 
+function playAgain() {
+  state.round++;
+  state.screen = "lobby";
+  render();
+}
+
 render();
 </script>
-
 </body>
 </html>
