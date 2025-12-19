@@ -316,11 +316,10 @@ function show(id){
 
 const grid=document.getElementById('playerGrid');
 for(let i = 3; i <= 10; i++) {
-  const b = document.createElement('button');
-  b.className = 'player-btn';
-  b.textContent = i;
-  b.onclick = () => selectPlayers(i);
-  grid.appendChild(b);
+  const btn = document.createElement("button");
+btn.textContent = i;
+btn.onclick = () => selectPlayers(i);
+grid.appendChild(btn);
 }
 
 function selectPlayers(n){
@@ -351,7 +350,7 @@ function showRole(){
   back.innerHTML=`
     <div class="eye">👁️</div>
     <h2>${role.toUpperCase()}</h2>
-    <p>${role==='teammate'?'Help the Guesser!':role==='saboteur'?'Mislead the group':'You have to guess the number'}</p>
+    <p>${role==='teammate'?'Help the Guesser!':role==='saboteur'?'Mislead the group!':'Show everyone your role, you are guessing the number!'}</p>
     ${role!=='guesser'?`<h1>${number}</h1>`:''}
   `;
   document.getElementById('flipCard').classList.remove('revealed');
