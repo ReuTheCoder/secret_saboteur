@@ -231,6 +231,10 @@ body{
   display: flex;
   justify-content: center;
 }
+
+  .hidden {
+  display: none;
+}
   
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -397,6 +401,15 @@ input{
   <h2>Enter Player Names</h2>
   <div class="sub">Who’s playing today?</div>
   <div class="card" id="nameInputs"></div>
+ 
+  <div id="saboteurSelect" class="card hidden">
+  <h3 style="text-align:center">Number of Saboteurs</h3>
+  <div class="grid">
+    <button onclick="setSaboteurs(1)">1</button>
+    <button onclick="setSaboteurs(2)">2</button>
+  </div>
+</div>
+  
   <button onclick="startRound()">Continue →</button>
 </div>
 
@@ -594,6 +607,7 @@ const prompts = [
 ];
 
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
+  let saboteurCount = 1;
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -616,20 +630,46 @@ grid.appendChild(btn);
 }
 
 function selectPlayers(n){
-  count=n;
+  count = n;
   show('names');
-  const wrap=document.getElementById('nameInputs');
-  wrap.innerHTML='';
-  for(let i=0;i<n;i++){
-    wrap.innerHTML+=`<input value="Player ${i+1}">`;
+
+  const wrap = document.getElementById('nameInputs');
+  wrap.innerHTML = '';
+
+  for(let i = 0; i < n; i++){
+    wrap.innerHTML += `<input value="Player ${i+1}">`;
   }
+
+  const sabBox = document.getElementById('saboteurSelect');
+
+  if (n > 5) {
+    sabBox.classList.remove('hidden');
+    saboteurCount = 1; // default
+  } else {
+    sabBox.classList.add('hidden');
+    saboteurCount = 1;
+  }
+}
+
+  function setSaboteurs(n) {
+  saboteurCount = n;
 }
 
 function startRound(){
   players=[...document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
   roles=Array(count).fill('teammate');
-  roles[Math.floor(Math.random()*count)]='saboteur';
-  roles[Math.floor(Math.random()*count)]='guesser';
+
+// assign saboteurs
+const indices = [...Array(count).keys()].sort(() => Math.random() - 0.5);
+
+for (let i = 0; i < saboteurCount; i++) {
+  roles[indices[i]] = 'saboteur';
+}
+
+// assign guesser (must not overwrite saboteur)
+const guesserIndex = indices.find(i => roles[i] === 'teammate');
+roles[guesserIndex] = 'guesser';
+  
   number=Math.floor(Math.random()*10)+1;
   idx=0;
   showRole();
@@ -703,8 +743,12 @@ function makeGuess(n){
 
   document.getElementById('realNum').textContent = number;
   document.getElementById('guessNum').textContent = guess;
-  const sabIndex = roles.findIndex(r => r === 'saboteur');
-document.getElementById('sabName').textContent = players[sabIndex];
+  const saboteurs = roles
+  .map((r, i) => r === 'saboteur' ? players[i] : null)
+  .filter(Boolean);
+
+document.getElementById('sabName').textContent =
+  saboteurs.length ? saboteurs.join(', ') : 'Nobody';
 
   const results = document.getElementById('results');
   results.classList.remove('results-animate');
@@ -768,6 +812,7 @@ function closeRules() {
     }, i * 120);
   });
 }
+  
 
 
 function playAgain(){
@@ -850,10 +895,10 @@ function resetGame(){round=1;show('intro')}
       One player is the Guesser and must figure it out.
       </p>
       <p>
-      One player <em>might<em> be the Saboteur, who tries to mislead the guesser.
+      One player <em>might</em> be the Saboteur, who tries to mislead the guesser.
     </p>
     <p>
-      Teammates win only if the Guesser is correct or if they expose the Saboteur.
+      Teammates win only if the Guesser correctly guesses the number OR the Saboteur.
     </p>
      <p>
       The Saboteur wins if they stay hidden and cause a wrong guess.
