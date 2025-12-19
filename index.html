@@ -33,6 +33,46 @@ body{
 }
 .screen.active{display:block}
 
+.flip-wrap {
+  perspective: 1000px;
+  margin-bottom: 20px;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.screen.results-animate {
+  animation: slideFadeIn 0.8s ease forwards;
+}
+
+  #resultMessage {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 12px;
+  animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.correct {
+  color: #2e7d32;
+}
+
+.incorrect {
+  color: #c62828;
+}
+
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
 h2{font-size:1.6rem}
@@ -67,15 +107,18 @@ button:active{transform:scale(.98)}
   margin:20px 0;
 }
 
-.player-btn{
-  background:white;
-  border:2px solid #e0e0e0;
-  border-radius:14px;
-  padding:14px 0;
-  font-size:1.1rem;
-  font-weight:600;
+.player-btn {
+  position: relative;
 }
 
+.player-btn::after {
+  content: attr(data-num);
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
 .card{
   background:var(--card);
   border-radius:18px;
@@ -229,7 +272,7 @@ input{
   <div class="sub" id="guessPrompt"></div>
 
   <div class="grid">
-    <button class="player-btn" onclick="makeGuess(1)">1</button>
+     <button class="player-btn" onclick="makeGuess(1)">1</button>
   <button class="player-btn" onclick="makeGuess(2)">2</button>
   <button class="player-btn" onclick="makeGuess(3)">3</button>
   <button class="player-btn" onclick="makeGuess(4)">4</button>
@@ -246,6 +289,7 @@ input{
 <div class="screen" id="results">
   <h2>Results</h2>
   <div class="card">
+    <h2 id="resultMessage"></h2>
     <p>The number was <b id="realNum"></b></p>
     <p>Guesser said <b id="guessNum"></b></p>
   </div>
@@ -396,6 +440,18 @@ function showRole(){
   show('role');
 }
 
+function revealCorrectness() {
+  const msg = document.getElementById('resultMessage');
+
+  if (guess === number) {
+    msg.textContent = "✅ Correct!";
+    msg.className = "correct";
+  } else {
+    msg.textContent = "❌ Incorrect!";
+    msg.className = "incorrect";
+  }
+}
+  
 function toggleFlip(){document.getElementById('flipCard').classList.toggle('revealed')}
 
 function nextPlayer(){
@@ -423,11 +479,24 @@ function toGuess(){
 }
 
 function makeGuess(n){
-  guess=n;
-  document.getElementById('realNum').textContent=number;
-  document.getElementById('guessNum').textContent=guess;
-  document.getElementById('sabName').textContent=players[roles.indexOf('saboteur')];
+  guess = n;
+
+  document.getElementById('realNum').textContent = number;
+  document.getElementById('guessNum').textContent = guess;
+  document.getElementById('sabName').textContent =
+    players[roles.indexOf('saboteur')];
+
+  const results = document.getElementById('results');
+  results.classList.remove('results-animate');
+
   show('results');
+
+  // trigger animation cleanly
+  requestAnimationFrame(() => {
+    results.classList.add('results-animate');
+  });
+
+  revealCorrectness();
 }
 
 function playAgain(){round++;startRound()}
