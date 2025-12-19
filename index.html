@@ -235,6 +235,30 @@ body{
   .hidden {
   display: none;
 }
+
+  button.selected{
+  background:var(--primary);
+  color:white;
+  box-shadow:0 0 0 3px rgba(0,188,212,.35);
+}
+
+  .grid{
+  justify-items:center;
+}
+.grid button{
+  max-width:90px;
+}
+  #guess .grid{
+  max-width:300px;
+  margin:0 auto;
+}
+
+  #saboteurChoices button{
+  width:auto;
+  padding:10px 14px;
+  font-size:0.95rem;
+  min-width:90px;
+}
   
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -265,7 +289,8 @@ button:active{transform:scale(.98)}
 
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(auto-fit, minmax(80px, 1fr));
+  justify-content:center;
   gap:12px;
   margin:20px 0;
 }
@@ -452,7 +477,7 @@ input{
 <div class="screen" id="guess">
   <h2>Guesser</h2>
   <div class="sub" id="guessPrompt"></div>
-
+<h3 style="text-align:center">Step 1: Choose the Number</h3>
   <div class="grid">
      <button class="player-btn" onclick="makeGuess(1)">1</button>
   <button class="player-btn" onclick="makeGuess(2)">2</button>
@@ -467,7 +492,7 @@ input{
   </div>
 
   <div class="card">
-  <h3>Select the Saboteur</h3>
+  <h3 style="text-align:center">Step 2: Who was the Saboteur?</h3>
   <div id="saboteurChoices" class="grid"></div>
 </div>
 
@@ -670,18 +695,26 @@ function selectPlayers(n){
 
 function startRound(){
   players=[...document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
-  roles=Array(count).fill('teammate');
+  roles = Array(count).fill('teammate');
 
-// assign saboteurs
-const indices = [...Array(count).keys()].sort(() => Math.random() - 0.5);
+// Assign Guesser
+const guesserIndex = Math.floor(Math.random() * count);
+roles[guesserIndex] = 'guesser';
+
+// Determine saboteur count
+if (count >= 7 && count <= 8) saboteurCount = 3;
+if (count >= 9) saboteurCount = 4;
+
+// Assign Saboteurs
+let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
 
 for (let i = 0; i < saboteurCount; i++) {
-  roles[indices[i]] = 'saboteur';
+  const pick = Math.floor(Math.random() * available.length);
+  roles[available[pick]] = 'saboteur';
+  available.splice(pick, 1);
 }
 
-// assign guesser (must not overwrite saboteur)
-const guesserIndex = indices.find(i => roles[i] === 'teammate');
-roles[guesserIndex] = 'guesser';
+
   
   number=Math.floor(Math.random()*10)+1;
   idx=0;
@@ -755,33 +788,16 @@ updateSubmitButton();
 }
 
 function makeGuess(n){
-  document.getElementById('guess').style.animation = 'none';
-  guess = n;
+  guessedNumber = n;
 
-  document.getElementById('realNum').textContent = number;
-  document.getElementById('guessNum').textContent = guess;
-  const saboteurs = roles
-  .map((r, i) => r === 'saboteur' ? players[i] : null)
-  .filter(Boolean);
+  document
+    .querySelectorAll("#guess .player-btn")
+    .forEach(b => b.classList.remove("selected"));
 
-document.getElementById('sabName').textContent =
-  saboteurs.length ? saboteurs.join(', ') : 'Nobody';
+  const btns = document.querySelectorAll("#guess .player-btn");
+  btns[n - 1]?.classList.add("selected");
 
-   guessedNumber = n;
-  highlightGuessButtons();
   updateSubmitButton();
-
-  const results = document.getElementById('results');
-  results.classList.remove('results-animate');
-
-  show('results');
-
-  // trigger animation cleanly
-  requestAnimationFrame(() => {
-    results.classList.add('results-animate');
-  });
- if (guess === number) launchConfetti();
-  revealCorrectness();
 }
 
   function selectSaboteur(index, btn) {
@@ -802,7 +818,7 @@ document.getElementById('sabName').textContent =
 }
 
   function submitGuess() {
-  const correctNumber = guessedNumber === secretNumber;
+  const correctNumber = guessedNumber === number;
 
   const saboteurIndices = roles
     .map((r, i) => r === "saboteur" ? i : null)
@@ -812,19 +828,30 @@ document.getElementById('sabName').textContent =
     (saboteurIndices.length === 0 && guessedSaboteur === null) ||
     saboteurIndices.includes(guessedSaboteur);
 
-  guessWasCorrect = correctNumber || correctSaboteur;
+  document.getElementById("realNum").textContent = number;
+  document.getElementById("guessNum").textContent = guessedNumber;
 
-    document.getElementById("resultText").textContent =
-  correctNumber && correctSaboteur
-    ? "Perfect! Number AND Saboteur guessed!"
-    : correctNumber
-      ? "Correct number!"
-      : correctSaboteur
-        ? "Correct Saboteur!"
-        : "Wrong guesses!";
+  document.getElementById("sabName").textContent =
+    saboteurIndices.length
+      ? saboteurIndices.map(i => players[i]).join(", ")
+      : "Nobody";
 
-  showResults(correctNumber, correctSaboteur);
+  document.getElementById("resultText").textContent =
+    correctNumber && correctSaboteur
+      ? "Perfect! Number AND Saboteur guessed!"
+      : correctNumber
+        ? "Correct number!"
+        : correctSaboteur
+          ? "Correct Saboteur!"
+          : "Wrong guesses!";
+
+  revealCorrectness();
+
+  show("results");
+
+  if (correctNumber || correctSaboteur) launchConfetti();
 }
+
   
   function showSaboteurInfo() {
   document.getElementById('sabPopup').classList.remove('hidden');
