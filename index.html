@@ -740,7 +740,60 @@ function closeRules() {
 function playAgain(){
   startRound();
 }
+
+  function handleKey(e) {
+  const key = e.key;
+
+  // ----- POPUPS -----
+  if (key === "Escape") {
+    closeRules();
+    closeSaboteurInfo();
+    return;
+  }
+
+  // ----- ROLE SCREEN -----
+  if (isActive("role")) {
+    if (key === " " || key === "Enter") {
+      e.preventDefault();
+      toggleFlip();
+    }
+  }
+
+  // ----- DISCUSSION SCALE (1–10) -----
+  if (isActive("discussion")) {
+    if (key >= "1" && key <= "9") pulseNumber(+key);
+    if (key === "0") pulseNumber(10);
+    if (key === "Enter") toGuess();
+  }
+
+  // ----- GUESS SCREEN -----
+  if (isActive("guess")) {
+    if (key >= "1" && key <= "9") makeGuess(+key);
+    if (key === "0") makeGuess(10);
+  }
+
+  // ----- RESULTS -----
+  if (isActive("results") && key === "Enter") {
+    playAgain();
+  }
+}
+
+  function isActive(id) {
+  return document.getElementById(id).classList.contains("active");
+}
+
+  function pulseNumber(n) {
+  const items = document.querySelectorAll("#scaleBar div");
+  const el = items[n - 1];
+  if (!el) return;
+
+  el.classList.remove("pulse");
+  el.offsetHeight; // reset animation
+  el.classList.add("pulse");
+}
+  
 function resetGame(){round=1;show('intro')}
+  document.addEventListener("keydown", handleKey);
 </script>
 <div id="sabPopup" class="popup hidden">
   <div class="popup-content">
