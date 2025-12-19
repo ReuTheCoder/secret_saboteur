@@ -1,5 +1,5 @@
 # secret_saboteur
-A social deduction game
+a social deduction game
 
 Everyone gets the same secret number (1–10).
 One player is the Guesser and must figure it out based on other player's accurate clues related to the prompt.
