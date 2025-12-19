@@ -889,10 +889,10 @@ function updateSubmitButton() {
   const btn = document.getElementById("submitGuessBtn");
 
   const numberReady = guessedNumber !== null;
+
   const saboteurReady =
-    saboteurCount === 0
-      ? guessedNobody
-      : guessedSaboteurs.length === saboteurCount;
+    guessedNobody ||
+    guessedSaboteurs.length === saboteurCount;
 
   btn.disabled = !(numberReady && saboteurReady);
 }
