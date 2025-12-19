@@ -465,6 +465,16 @@ input{
   <button class="player-btn" onclick="makeGuess(9)">9</button>
   <button class="player-btn" onclick="makeGuess(10)">10</button>
   </div>
+
+  <div class="card">
+  <h3>Select the Saboteur</h3>
+  <div id="saboteurChoices" class="grid"></div>
+</div>
+
+<button id="submitGuessBtn" onclick="submitGuess()" disabled>
+  Submit Guess
+</button>
+  
 </div>
 
 <!-- RESULTS -->
@@ -472,6 +482,7 @@ input{
   <h2>Results</h2>
   <div class="card">
     <h2 id="resultMessage"></h2>
+    <p id="resultText" style="font-weight:700;font-size:1.2rem;text-align:center"></p>
     <p>The number was <b id="realNum"></b></p>
     <p>Guesser said <b id="guessNum"></b></p>
   </div>
@@ -607,7 +618,9 @@ const prompts = [
 ];
 
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
-  let saboteurCount = 1;
+let saboteurCount = 1;
+let guessedNumber = null;
+let guessedSaboteur = null;
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -734,6 +747,10 @@ scale.style.animation = '';
 
 function toGuess(){
   document.getElementById('guessPrompt').textContent=curPrompt.title;
+  guessedNumber = null;
+guessedSaboteur = null;
+setupSaboteurChoices();
+updateSubmitButton();
   show('guess');
 }
 
@@ -750,6 +767,10 @@ function makeGuess(n){
 document.getElementById('sabName').textContent =
   saboteurs.length ? saboteurs.join(', ') : 'Nobody';
 
+   guessedNumber = n;
+  highlightGuessButtons();
+  updateSubmitButton();
+
   const results = document.getElementById('results');
   results.classList.remove('results-animate');
 
@@ -763,6 +784,48 @@ document.getElementById('sabName').textContent =
   revealCorrectness();
 }
 
+  function selectSaboteur(index, btn) {
+  guessedSaboteur = index;
+
+  document
+    .querySelectorAll("#saboteurChoices button")
+    .forEach(b => b.classList.remove("selected"));
+
+  btn.classList.add("selected");
+
+  updateSubmitButton();
+}
+
+  function updateSubmitButton() {
+  document.getElementById("submitGuessBtn").disabled =
+    guessedNumber === null || guessedSaboteur === null;
+}
+
+  function submitGuess() {
+  const correctNumber = guessedNumber === secretNumber;
+
+  const saboteurIndices = roles
+    .map((r, i) => r === "saboteur" ? i : null)
+    .filter(i => i !== null);
+
+  const correctSaboteur =
+    (saboteurIndices.length === 0 && guessedSaboteur === null) ||
+    saboteurIndices.includes(guessedSaboteur);
+
+  guessWasCorrect = correctNumber || correctSaboteur;
+
+    document.getElementById("resultText").textContent =
+  correctNumber && correctSaboteur
+    ? "Perfect! Number AND Saboteur guessed!"
+    : correctNumber
+      ? "Correct number!"
+      : correctSaboteur
+        ? "Correct Saboteur!"
+        : "Wrong guesses!";
+
+  showResults(correctNumber, correctSaboteur);
+}
+  
   function showSaboteurInfo() {
   document.getElementById('sabPopup').classList.remove('hidden');
 }
@@ -813,7 +876,23 @@ function closeRules() {
   });
 }
   
+function setupSaboteurChoices() {
+  const wrap = document.getElementById("saboteurChoices");
+  wrap.innerHTML = "";
 
+  players.forEach((name, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    btn.onclick = () => selectSaboteur(i, btn);
+    wrap.appendChild(btn);
+  });
+
+  // Nobody option
+  const nobodyBtn = document.createElement("button");
+  nobodyBtn.textContent = "Nobody";
+  nobodyBtn.onclick = () => selectSaboteur(null, nobodyBtn);
+  wrap.appendChild(nobodyBtn);
+}
 
 function playAgain(){
   startRound();
