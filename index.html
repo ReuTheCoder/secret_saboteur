@@ -60,6 +60,15 @@ body{
   animation: popIn 0.4s ease;
 }
 
+  #multiSaboteurHint{
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:.6}
+  50%{opacity:1}
+}
+
 @keyframes popIn {
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
@@ -190,6 +199,17 @@ body{
   100% { transform: scale(1); }
 }
 
+  @keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.3s ease;
+}
 .scale div.pulse {
   animation: pressPulse 0.4s ease;
 }
@@ -236,6 +256,17 @@ body{
   display: none;
 }
 
+  #playerGrid button {
+  width: auto;
+  min-width: 64px;
+}
+  
+  #playerGrid {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 300px;
+  margin: 20px auto;
+}
+  
   button.selected{
   background:var(--primary);
   color:white;
@@ -429,13 +460,10 @@ input{
  
   <div id="saboteurSelect" class="card hidden">
   <h3 style="text-align:center">Number of Saboteurs</h3>
-  <div class="grid">
-    <button onclick="setSaboteurs(1)">1</button>
-    <button onclick="setSaboteurs(2)">2</button>
-  </div>
+  <div class="grid" id="saboteurCountGrid"></div>
 </div>
   
-  <button onclick="startRound()">Continue →</button>
+ <button onclick="confirmSaboteurAndStart()">Continue →</button>
 </div>
 
 <!-- ROLE -->
@@ -477,6 +505,9 @@ input{
 <div class="screen" id="guess">
   <h2>Guesser</h2>
   <div class="sub" id="guessPrompt"></div>
+  <div class="sub" id="multiSaboteurHint" style="display:none;font-weight:600;">
+  ⚠️ There may be multiple Saboteurs.
+</div>
 <h3 style="text-align:center">Step 1: Choose the Number</h3>
   <div class="grid">
      <button class="player-btn" onclick="makeGuess(1)">1</button>
@@ -643,9 +674,11 @@ const prompts = [
 ];
 
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
-let saboteurCount = 1;
+
+  let guessedNobody = false;
+  let saboteurCount = 1;
 let guessedNumber = null;
-let guessedSaboteur = null;
+let guessedSaboteurs = [];
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -679,14 +712,10 @@ function selectPlayers(n){
   }
 
   const sabBox = document.getElementById('saboteurSelect');
+sabBox.classList.remove('hidden');
 
-  if (n > 5) {
-    sabBox.classList.remove('hidden');
-    saboteurCount = 1; // default
-  } else {
-    sabBox.classList.add('hidden');
-    saboteurCount = 1;
-  }
+setupSaboteurCountSelect();
+saboteurCount = 1; // default
 }
 
   function setSaboteurs(n) {
@@ -701,9 +730,7 @@ function startRound(){
 const guesserIndex = Math.floor(Math.random() * count);
 roles[guesserIndex] = 'guesser';
 
-// Determine saboteur count
-if (count >= 7 && count <= 8) saboteurCount = 3;
-if (count >= 9) saboteurCount = 4;
+
 
 // Assign Saboteurs
 let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
@@ -779,13 +806,25 @@ scale.style.animation = '';
 }
 
 function toGuess(){
-  document.getElementById('guessPrompt').textContent=curPrompt.title;
-  guessedNumber = null;
-guessedSaboteur = null;
+  document.getElementById('guessPrompt').textContent = curPrompt.title;
+
+  const hint = document.getElementById("multiSaboteurHint");
+  if (saboteurCount > 1) {
+    hint.style.display = "block";
+  } else {
+    hint.style.display = "none";
+  }
+  
+guessedNumber = null;
+guessedSaboteurs = [];
+guessedNobody = false;
+
 setupSaboteurChoices();
 updateSubmitButton();
+  
   show('guess');
 }
+
 
 function makeGuess(n){
   guessedNumber = n;
@@ -801,20 +840,62 @@ function makeGuess(n){
 }
 
   function selectSaboteur(index, btn) {
-  guessedSaboteur = index;
+
+  // "Nobody" option
+ if (index === null) {
+  guessedSaboteurs = [];
+  guessedNobody = true;
 
   document
     .querySelectorAll("#saboteurChoices button")
     .forEach(b => b.classList.remove("selected"));
 
   btn.classList.add("selected");
+  updateSubmitButton();
+  return;
+}
+
+  // Remove "Nobody" selection if choosing a player
+ document
+  .querySelectorAll("#saboteurChoices button")
+  .forEach(b => {
+    if (b.textContent === "Nobody") b.classList.remove("selected");
+  });
+
+guessedNobody = false;
+
+  const existingIndex = guessedSaboteurs.indexOf(index);
+
+  // Unselect if already selected
+  if (existingIndex !== -1) {
+    guessedSaboteurs.splice(existingIndex, 1);
+    btn.classList.remove("selected");
+  } 
+  // Enforce limit
+  else {
+    if (guessedSaboteurs.length >= saboteurCount) {
+      // Small UX feedback
+      btn.classList.add("shake");
+      setTimeout(() => btn.classList.remove("shake"), 300);
+      return;
+    }
+    guessedSaboteurs.push(index);
+    btn.classList.add("selected");
+  }
 
   updateSubmitButton();
 }
 
-  function updateSubmitButton() {
-  document.getElementById("submitGuessBtn").disabled =
-    guessedNumber === null || guessedSaboteur === null;
+function updateSubmitButton() {
+  const btn = document.getElementById("submitGuessBtn");
+
+  const numberReady = guessedNumber !== null;
+  const saboteurReady =
+    saboteurCount === 0
+      ? guessedNobody
+      : guessedSaboteurs.length === saboteurCount;
+
+  btn.disabled = !(numberReady && saboteurReady);
 }
 
   function submitGuess() {
@@ -824,10 +905,17 @@ function makeGuess(n){
     .map((r, i) => r === "saboteur" ? i : null)
     .filter(i => i !== null);
 
-  const correctSaboteur =
-    (saboteurIndices.length === 0 && guessedSaboteur === null) ||
-    saboteurIndices.includes(guessedSaboteur);
+  let correctSaboteur;
 
+if (saboteurCount === 0) {
+  correctSaboteur = guessedNobody;
+} else {
+  correctSaboteur =
+    guessedSaboteurs.length === saboteurIndices.length &&
+    saboteurIndices.every(i => guessedSaboteurs.includes(i));
+}
+
+const teammatesWin = correctNumber || correctSaboteur;
   document.getElementById("realNum").textContent = number;
   document.getElementById("guessNum").textContent = guessedNumber;
 
@@ -837,19 +925,19 @@ function makeGuess(n){
       : "Nobody";
 
   document.getElementById("resultText").textContent =
+     
     correctNumber && correctSaboteur
       ? "Perfect! Number AND Saboteur guessed!"
-      : correctNumber
-        ? "Correct number!"
-        : correctSaboteur
-          ? "Correct Saboteur!"
-          : "Wrong guesses!";
+      : teammatesWin
+        ? "Teammates win!"
+        : "Saboteurs win!";
+        
 
   revealCorrectness();
 
   show("results");
 
-  if (correctNumber || correctSaboteur) launchConfetti();
+  
 }
 
   
@@ -892,6 +980,43 @@ function closeSaboteurInfo() {
 function closeRules() {
   document.getElementById('rulesPopup').classList.add('hidden');
 }
+
+  function getMaxSaboteurs(playerCount){
+  if (playerCount >= 10) return 4;
+  if (playerCount >= 8) return 3;
+  if (playerCount >= 6) return 2;
+  return 1;
+}
+
+  function confirmSaboteurAndStart(){
+  if (!saboteurCount) {
+    alert("Please select the number of Saboteurs.");
+    return;
+  }
+  startRound();
+}
+
+  function setupSaboteurCountSelect(){
+  const maxSab = getMaxSaboteurs(count);
+  const container = document.getElementById("saboteurCountGrid");
+  container.innerHTML = "";
+
+  for (let i = 1; i <= maxSab; i++){
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.onclick = () => {
+      saboteurCount = i;
+      document
+        .querySelectorAll("#saboteurCountGrid button")
+        .forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+
+    if (i === 1) btn.classList.add("selected"); // default highlight
+    container.appendChild(btn);
+  }
+}
+
 
   function pulseScale() {
   const items = document.querySelectorAll('#scaleBar div');
@@ -1012,7 +1137,7 @@ function resetGame(){round=1;show('intro')}
      <p>
       The Guesser must guess who they think the Saboteur is before guessing the secret number.
     </p>
-    <button onclick="closeRules()">Got it</button>
+    <button onclick="closeRules()">Got it!</button>
   </div>
 </div>
   
