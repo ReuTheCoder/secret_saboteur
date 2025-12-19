@@ -345,6 +345,16 @@ button:active{transform:scale(.98)}
   margin:20px 0;
 }
 
+  @keyframes unlockPop {
+  0% { transform: scale(0.95); box-shadow: none; }
+  60% { transform: scale(1.05); box-shadow: 0 0 18px rgba(0,188,212,.6); }
+  100% { transform: scale(1); box-shadow: none; }
+}
+
+button.unlock-animate {
+  animation: unlockPop 0.4s ease;
+}
+
 input{
   width:100%;
   padding:14px;
@@ -679,6 +689,7 @@ let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
   let saboteurCount = 1;
 let guessedNumber = null;
 let guessedSaboteurs = [];
+  let submitWasDisabled = true;
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -892,10 +903,14 @@ function updateSubmitButton() {
 
   const saboteurReady =
     guessedNobody ||
-    guessedSaboteurs.length === saboteurCount;
+    guessedSaboteurs.length > 0 &&
+    guessedSaboteurs.length <= maxSaboteurs;
 
   btn.disabled = !(numberReady && saboteurReady);
+
+  if (!btn.disabled) triggerSubmitUnlock(btn);
 }
+
 
   function submitGuess() {
   const correctNumber = guessedNumber === number;
@@ -913,6 +928,10 @@ if (saboteurCount === 0) {
     guessedSaboteurs.length === saboteurIndices.length &&
     saboteurIndices.every(i => guessedSaboteurs.includes(i));
 }
+const correctSaboteurGuess =
+  guessedNobody
+    ? actualSaboteurs.length === 0
+    : actualSaboteurs.every(i => guessedSaboteurs.includes(i));
 
 const teammatesWin = correctNumber || correctSaboteur;
     if (teammatesWin) {
@@ -1050,6 +1069,18 @@ function setupSaboteurChoices() {
 function playAgain(){
   startRound();
 }
+
+  let submitWasDisabled = true;
+
+function triggerSubmitUnlock(btn) {
+  if (submitWasDisabled) {
+    btn.classList.remove("unlock-animate");
+    void btn.offsetWidth; // reset animation
+    btn.classList.add("unlock-animate");
+  }
+  submitWasDisabled = false;
+}
+  
 
   function handleKey(e) {
   const key = e.key;
