@@ -81,9 +81,9 @@ body{
   margin-bottom: 16px;
 }
 
-  .sab-card {
-  background: black;
-  color: white;
+.card.sab-card {
+  background: #000;
+  color: #fff;
   position: relative;
 }
 
@@ -589,7 +589,10 @@ function showRole(){
   document.getElementById('currentName').textContent=players[idx];
   const back=document.getElementById('roleBack');
   const role=roles[idx];
-  back.parentElement.className='flip'+(role==='saboteur'?' saboteur':'');
+  const flip = back.parentElement;
+flip.classList.remove('saboteur');
+if (role === 'saboteur') flip.classList.add('saboteur');
+  
   back.innerHTML=`
     <div class="eye">👁️</div>
     <h2>${role.toUpperCase()}</h2>
@@ -614,8 +617,6 @@ else sounds.wrong.play();
     msg.className = "incorrect";
   }
 }
-  
-function toggleFlip(){document.getElementById('flipCard').classList.toggle('revealed')}
 
 function nextPlayer(){
   idx++;
@@ -719,7 +720,9 @@ function closeRules() {
 }
 
 
-function playAgain(){round++;Round()}
+function playAgain(){
+  startRound();
+}
 function resetGame(){round=1;show('intro')}
 </script>
 <div id="sabPopup" class="popup hidden">
