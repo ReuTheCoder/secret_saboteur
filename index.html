@@ -129,6 +129,32 @@ body{
   text-align: center;
 }
 
+  .confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 999;
+}
+
+.confetti span {
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  background: var(--primary);
+  opacity: 0.9;
+  animation: fall 1.8s linear forwards;
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(-20px) rotate(0deg);
+  }
+  to {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+  
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
 h2{font-size:1.6rem}
@@ -453,6 +479,12 @@ const prompts = [
 
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
 
+const sounds = {
+  flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
+  correct: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
+  wrong: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA")
+};
+
 /* --- FLOW --- */
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -505,6 +537,9 @@ function showRole(){
 function revealCorrectness() {
   const msg = document.getElementById('resultMessage');
 
+  if (guess === number) sounds.correct.play();
+else sounds.wrong.play();
+  
   if (guess === number) {
     msg.textContent = "✅ Correct!";
     msg.className = "correct";
@@ -557,7 +592,7 @@ function makeGuess(n){
   requestAnimationFrame(() => {
     results.classList.add('results-animate');
   });
-
+ if (guess === number) launchConfetti();
   revealCorrectness();
 }
 
@@ -567,6 +602,26 @@ function makeGuess(n){
 
 function closeSaboteurInfo() {
   document.getElementById('sabPopup').classList.add('hidden');
+}
+
+  function launchConfetti() {
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti';
+
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement('span');
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDelay = Math.random() * 0.4 + 's';
+    wrap.appendChild(c);
+  }
+
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 2000);
+}
+
+  function toggleFlip() {
+  sounds.flip.play();
+  document.getElementById('flipCard').classList.toggle('revealed');
 }
 
 function playAgain(){round++;startRound()}
