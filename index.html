@@ -154,6 +154,29 @@ body{
     transform: translateY(100vh) rotate(360deg);
   }
 }
+
+  #intro .info-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+  .small-btn {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  width: auto;
+  margin: 12px auto 20px;
+  display: block;
+}
+
+#promptText {
+  text-align: center;
+  margin-top: 12px;
+}
+
+  .scale {
+  gap: 6px;
+}
   
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -276,10 +299,11 @@ input{
 }
 .scale div{
   flex:1;
-  background:#b2ebf2;
+  background: var(--primary);
+  color: white;
   border-radius:6px;
-  padding:8px 0;
   font-weight:600;
+  padding: 8px;
 
   display:flex;
   align-items:center;
@@ -300,6 +324,7 @@ input{
 
 <!-- INTRO -->
 <div class="screen active" id="intro">
+   <button class="info-btn" onclick="showRules()">?</button>
   <h1>Secret Saboteur</h1>
   <div class="sub">A social deduction party game</div>
 
@@ -308,6 +333,7 @@ input{
     <div class="grid" id="playerGrid"></div>
     <div class="footer">Select 3–10 players to start</div>
   </div>
+ 
 </div>
 
 <!-- NAMES -->
@@ -349,8 +375,8 @@ input{
     </div>
   </div>
 
-  <button onclick="toGuess()">Continue to Guess →</button>
-  <button class="secondary" onclick="rerollPrompt()">🔄 New Prompt</button>
+ <button class="secondary small-btn" onclick="rerollPrompt()">↻ New Prompt</button>
+<button onclick="toGuess()">Continue to Guess →</button>
 </div>
 
 <!-- GUESS -->
@@ -565,9 +591,9 @@ function startDiscussion(){
   document.getElementById('lowLabel').textContent=p.low;
   document.getElementById('highLabel').textContent=p.high;
   document.getElementById('scaleBar').innerHTML='';
-  for(let i=1;i<=10;i++){
-    document.getElementById('scaleBar').innerHTML+=`<div class="${i>=number?'dark':''}">${i}</div>`;
-  }
+  for (let i = 1; i <= 10; i++) {
+  document.getElementById('scaleBar').innerHTML += `<div>${i}</div>`;
+}
   show('discussion');
 }
 
@@ -629,6 +655,15 @@ function closeSaboteurInfo() {
   startDiscussion();
 }
 
+  function showRules() {
+  document.getElementById('rulesPopup').classList.remove('hidden');
+}
+
+function closeRules() {
+  document.getElementById('rulesPopup').classList.add('hidden');
+}
+
+
 function playAgain(){round++;startRound()}
 function resetGame(){round=1;show('intro')}
 </script>
@@ -642,5 +677,22 @@ function resetGame(){round=1;show('intro')}
     <button onclick="closeSaboteurInfo()">Got it</button>
   </div>
 </div>
+
+  <div id="rulesPopup" class="popup hidden">
+  <div class="popup-content">
+    <h3>How to Play</h3>
+    <p>
+      Everyone gets the same secret number (1–10).
+      One player is the Guesser and must figure it out.
+      One player is the Saboteur and tries to mislead the group.
+    </p>
+    <p>
+      Teammates win if the Guesser is correct or exposes the Saboteur.
+      The Saboteur wins if they stay hidden and cause a wrong guess.
+    </p>
+    <button onclick="closeRules()">Got it</button>
+  </div>
+</div>
+  
 </body>
 </html>
