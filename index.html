@@ -177,6 +177,45 @@ body{
   .scale {
   gap: 6px;
 }
+
+  @keyframes pressPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
+.scale div.pulse {
+  animation: pressPulse 0.4s ease;
+}
+
+  .scale {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: scaleIn 0.5s ease forwards;
+}
+
+@keyframes scaleIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  #guess {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(0,188,212,0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(0,188,212,0.25);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(0,188,212,0);
+  }
+}
   
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -585,6 +624,10 @@ function nextPlayer(){
 }
 
 function startDiscussion(){
+  const scale = document.getElementById('scaleBar');
+scale.style.animation = 'none';
+scale.offsetHeight; // reflow
+scale.style.animation = '';
   const p=prompts[Math.floor(Math.random()*prompts.length)];
   window.curPrompt=p;
   document.getElementById('promptText').textContent=p.title;
@@ -595,6 +638,7 @@ function startDiscussion(){
   document.getElementById('scaleBar').innerHTML += `<div>${i}</div>`;
 }
   show('discussion');
+  pulseScale();
 }
 
 function toGuess(){
@@ -603,6 +647,7 @@ function toGuess(){
 }
 
 function makeGuess(n){
+  document.getElementById('guess').style.animation = 'none';
   guess = n;
 
   document.getElementById('realNum').textContent = number;
@@ -663,8 +708,18 @@ function closeRules() {
   document.getElementById('rulesPopup').classList.add('hidden');
 }
 
+  function pulseScale() {
+  const items = document.querySelectorAll('#scaleBar div');
+  items.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.add('pulse');
+      setTimeout(() => el.classList.remove('pulse'), 400);
+    }, i * 120);
+  });
+}
 
-function playAgain(){round++;startRound()}
+
+function playAgain(){round++;Round()}
 function resetGame(){round=1;show('intro')}
 </script>
 <div id="sabPopup" class="popup hidden">
