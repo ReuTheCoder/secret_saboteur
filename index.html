@@ -766,17 +766,16 @@ if (role === 'saboteur') flip.classList.add('saboteur');
   show('role');
 }
 
-function revealCorrectness() {
+function revealCorrectness(teammatesWin) {
   const msg = document.getElementById('resultMessage');
 
-  if (guess === number) sounds.correct.play();
-else sounds.wrong.play();
-  
-  if (guess === number) {
-    msg.textContent = "✅ Correct!";
+  if (teammatesWin) {
+    sounds.correct.play();
+    msg.textContent = "✅ Teammates Win!";
     msg.className = "correct";
   } else {
-    msg.textContent = "❌ Incorrect!";
+    sounds.wrong.play();
+    msg.textContent = "❌ Saboteurs Win!";
     msg.className = "incorrect";
   }
 }
@@ -916,6 +915,9 @@ if (saboteurCount === 0) {
 }
 
 const teammatesWin = correctNumber || correctSaboteur;
+    if (teammatesWin) {
+  launchConfetti();
+}
   document.getElementById("realNum").textContent = number;
   document.getElementById("guessNum").textContent = guessedNumber;
 
@@ -932,8 +934,7 @@ const teammatesWin = correctNumber || correctSaboteur;
         ? "Teammates win!"
         : "Saboteurs win!";
         
-
-  revealCorrectness();
+  revealCorrectness(teammatesWin);
 
   show("results");
 
