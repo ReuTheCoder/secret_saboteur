@@ -350,6 +350,7 @@ input{
   </div>
 
   <button onclick="toGuess()">Continue to Guess →</button>
+  <button class="secondary" onclick="rerollPrompt()">🔄 New Prompt</button>
 </div>
 
 <!-- GUESS -->
@@ -580,8 +581,8 @@ function makeGuess(n){
 
   document.getElementById('realNum').textContent = number;
   document.getElementById('guessNum').textContent = guess;
-  document.getElementById('sabName').textContent =
-    players[roles.indexOf('saboteur')];
+  const sabIndex = roles.findIndex(r => r === 'saboteur');
+document.getElementById('sabName').textContent = players[sabIndex];
 
   const results = document.getElementById('results');
   results.classList.remove('results-animate');
@@ -622,6 +623,10 @@ function closeSaboteurInfo() {
   function toggleFlip() {
   sounds.flip.play();
   document.getElementById('flipCard').classList.toggle('revealed');
+}
+
+  function rerollPrompt() {
+  startDiscussion();
 }
 
 function playAgain(){round++;startRound()}
