@@ -835,6 +835,9 @@ function resetGame(){round=1;show('intro')}
       If the Saboteur successfully misled the Guesser
       and was not caught, they win!
     </p>
+    <p>
+      If the spot is blank, there was no Saboteur. If the guesser beleived there was no saboteur, the teammates still win!
+    </p>
     <button onclick="closeSaboteurInfo()">Got it</button>
   </div>
 </div>
@@ -845,10 +848,12 @@ function resetGame(){round=1;show('intro')}
     <p>
       Everyone gets the same secret number (1–10).
       One player is the Guesser and must figure it out.
-      One player is the Saboteur and tries to mislead the guesser.
+      </p>
+      <p>
+      One player <em>might<em> be the Saboteur, who tries to mislead the guesser.
     </p>
     <p>
-      Teammates win if the Guesser is correct or exposes the Saboteur.
+      Teammates win only if the Guesser is correct or if they expose the Saboteur.
     </p>
      <p>
       The Saboteur wins if they stay hidden and cause a wrong guess.
