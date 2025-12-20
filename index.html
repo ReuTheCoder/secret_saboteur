@@ -746,9 +746,13 @@ roles[guesserIndex] = 'guesser';
 // Assign Saboteurs
 let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
 
-for (let i = 0; i < saboteurCount; i++) {
+const actualSaboteurCount =
+  Math.floor(Math.random() * (saboteurCount + 1));
+
+// assign saboteurs (RANDOM UP TO MAX)
+for (let i = 0; i < actualSaboteurCount; i++) {
   const pick = Math.floor(Math.random() * available.length);
-  roles[available[pick]] = 'saboteur';
+  roles[available[pick]] = "saboteur";
   available.splice(pick, 1);
 }
 
