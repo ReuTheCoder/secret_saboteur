@@ -904,7 +904,7 @@ function updateSubmitButton() {
   const saboteurReady =
     guessedNobody ||
     guessedSaboteurs.length > 0 &&
-    guessedSaboteurs.length <= maxSaboteurs;
+    guessedSaboteurs.length <= saboteurCount;
 
   btn.disabled = !(numberReady && saboteurReady);
 
@@ -924,14 +924,14 @@ function updateSubmitButton() {
 if (saboteurCount === 0) {
   correctSaboteur = guessedNobody;
 } else {
-  correctSaboteur =
-    guessedSaboteurs.length === saboteurIndices.length &&
-    saboteurIndices.every(i => guessedSaboteurs.includes(i));
-}
-const correctSaboteurGuess =
+
+  const correctSaboteur =
   guessedNobody
-    ? actualSaboteurs.length === 0
-    : actualSaboteurs.every(i => guessedSaboteurs.includes(i));
+    ? saboteurIndices.length === 0
+    : saboteurIndices.every(i => guessedSaboteurs.includes(i));
+
+}
+
 
 const teammatesWin = correctNumber || correctSaboteur;
     if (teammatesWin) {
@@ -1070,7 +1070,7 @@ function playAgain(){
   startRound();
 }
 
-  let submitWasDisabled = true;
+
 
 function triggerSubmitUnlock(btn) {
   if (submitWasDisabled) {
