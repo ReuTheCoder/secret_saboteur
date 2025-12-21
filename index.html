@@ -314,6 +314,36 @@ body{
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
+  /* Screen transitions */
+.screen {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.screen.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/*  reverse motion for exit */
+.screen.exit {
+  opacity: 0;
+  transform: translateY(-16px);
+}
+
+  .screen.from-right {
+  transform: translateX(24px);
+}
+
+.screen.from-left {
+  transform: translateX(-24px);
+}
+
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
 h2{font-size:1.6rem}
@@ -742,10 +772,26 @@ const sounds = {
   show('intro');    // enters the game
 }
 
-function show(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function show(id, direction = "right") {
+  const current = document.querySelector(".screen.active");
+  const next = document.getElementById(id);
+
+  if (current === next) return;
+
+  if (current) {
+    current.classList.remove("active");
+    current.classList.add("exit");
+  }
+
+  next.classList.add("active");
+  next.classList.add(direction === "right" ? "from-right" : "from-left");
+
+  requestAnimationFrame(() => {
+    next.classList.remove("from-right", "from-left");
+  });
 }
+
+
 
 const grid=document.getElementById('playerGrid');
 for(let i = 3; i <= 10; i++) {
