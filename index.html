@@ -733,6 +733,45 @@ saboteurCount = 1; // default
   saboteurCount = n;
 }
 
+function getActualSaboteurCount(maxSaboteurs) {
+  const roll = Math.random() * 100;
+
+  const tables = {
+    1: [
+      { count: 0, chance: 20 },
+      { count: 1, chance: 80 }
+    ],
+    2: [
+      { count: 0, chance: 10 },
+      { count: 1, chance: 30 },
+      { count: 2, chance: 60 }
+    ],
+    3: [
+      { count: 0, chance: 5 },
+      { count: 1, chance: 15 },
+      { count: 2, chance: 20 },
+      { count: 3, chance: 60 }
+    ],
+    4: [
+      { count: 0, chance: 1 },
+      { count: 1, chance: 15 },
+      { count: 2, chance: 16 },
+      { count: 3, chance: 18 },
+      { count: 4, chance: 50 } // remainder
+    ]
+  };
+
+  let cumulative = 0;
+  for (const entry of tables[maxSaboteurs]) {
+    cumulative += entry.chance;
+    if (roll <= cumulative) {
+      return entry.count;
+    }
+  }
+
+  return maxSaboteurs; // safety fallback
+}
+
 function startRound(){
   players=[...document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
   roles = Array(count).fill('teammate');
@@ -746,8 +785,7 @@ roles[guesserIndex] = 'guesser';
 // Assign Saboteurs
 let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
 
-const actualSaboteurCount =
-  Math.floor(Math.random() * (saboteurCount + 1));
+const actualSaboteurCount = getActualSaboteurCount(saboteurCount);
 
 // assign saboteurs (RANDOM UP TO MAX)
 for (let i = 0; i < actualSaboteurCount; i++) {
