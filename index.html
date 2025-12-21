@@ -312,6 +312,13 @@ body{
 }
   #home .grid {
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    display: flex;
+  justify-content: center;
+}
+ 
+#home .grid button {
+  width: auto;
+  min-width: 180px;
 }
 
   /* Screen transitions */
@@ -1062,7 +1069,7 @@ function updateSubmitButton() {
 
   let correctSaboteur;
 
-if (saboteurIndices.length === 0 === 0) {
+if (saboteurIndices.length === 0) {
   correctSaboteur = guessedNobody;
 } else {
 
@@ -1289,15 +1296,19 @@ function resetGame(){
   players = [];
   roles = [];
   idx = 0;
-  guess = null;
-  show('home');
+  guessedNumber = null;
+  show('');
 }
 
   document.addEventListener("keydown", handleKey);
 
-  document.getElementById("likelihoodToggle").addEventListener("change", e => {
-  showLikelihoodHint = e.target.checked;
-});
+  const likelihoodToggle = document.getElementById("likelihoodToggle");
+if (likelihoodToggle) {
+  likelihoodToggle.addEventListener("change", e => {
+    showLikelihoodHint = e.target.checked;
+  });
+}
+
 </script>
 <div id="sabPopup" class="popup hidden">
   <div class="popup-content">
