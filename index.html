@@ -310,6 +310,10 @@ body{
   margin-top: 10px;
   opacity: 0.8;
 }
+  #home .grid {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
 h2{font-size:1.6rem}
@@ -464,9 +468,26 @@ input{
 </head>
 
 <body>
+<!-- HOME / HUB -->
+<div class="screen active" id="home">
+  <h1>Pass n' Play</h1>
+  <div class="sub">
+    Fun party games that only require one screen
+  </div>
+
+  <div class="card">
+    <h2>Games</h2>
+
+    <div class="grid">
+      <button onclick="launchSecretSaboteur()">
+        Secret Saboteur
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- INTRO -->
-<div class="screen active" id="intro">
+<div class="screen" id="intro">
   
   <h1>Secret Saboteur</h1>
   <div class="sub">A social deduction party game</div>
@@ -716,6 +737,11 @@ const sounds = {
 };
 
 /* --- FLOW --- */
+  function launchSecretSaboteur() {
+  resetGame();      // ensures clean state
+  show('intro');    // enters the game
+}
+
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
