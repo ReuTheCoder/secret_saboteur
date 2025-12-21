@@ -1024,22 +1024,19 @@ if (showLikelihoodHint) {
   pulseScale();
 }
 
-function toGuess(){
+function toGuess() {
   document.getElementById('guessPrompt').textContent = curPrompt.title;
-  
-guessedNumber = null;
-guessedSaboteurs = [];
-guessedNobody = false;
-submitWasDisabled = true;
-  btn.classList.remove("unlock-animate");
 
+  guessedNumber = null;
+  guessedSaboteurs = [];
+  guessedNobody = false;
+  submitWasDisabled = true;
 
-setupSaboteurChoices();
-updateSubmitButton();
-  
+  setupSaboteurChoices();
+  updateSubmitButton();
+
   show('guess');
 }
-
 
 function makeGuess(n){
   guessedNumber = n;
