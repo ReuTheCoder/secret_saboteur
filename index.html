@@ -773,10 +773,56 @@ const sounds = {
   wrong: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA")
 };
 
+  const screenStack = [];
+
 /* --- FLOW --- */
   function launchSecretSaboteur() {
   resetGame();      // ensures clean state
   show('intro');    // enters the game
+}
+  function pushScreen(id) {
+  const current = screenStack[screenStack.length - 1];
+  const next = document.getElementById(id);
+  if (!next) return;
+
+  if (current) {
+    current.classList.remove("active");
+    current.classList.add("exit-left");
+  }
+
+  next.classList.add("active", "from-right");
+  screenStack.push(next);
+
+  requestAnimationFrame(() => {
+    next.classList.remove("from-right");
+  });
+}
+
+  function popScreen() {
+  if (screenStack.length <= 1) return;
+
+  const current = screenStack.pop();
+  const previous = screenStack[screenStack.length - 1];
+
+  current.classList.remove("active");
+  current.classList.add("exit-right");
+
+  previous.classList.add("active", "from-left");
+
+  requestAnimationFrame(() => {
+    previous.classList.remove("from-left");
+  });
+}
+
+function replaceWith(id) {
+  screenStack.length = 0;
+  document.querySelectorAll(".screen").forEach(s =>
+    s.classList.remove("active", "exit-left", "exit-right")
+  );
+
+  const next = document.getElementById(id);
+  next.classList.add("active");
+  screenStack.push(next);
 }
 
 function show(id, direction = "right") {
@@ -971,6 +1017,8 @@ function toGuess(){
 guessedNumber = null;
 guessedSaboteurs = [];
 guessedNobody = false;
+submitWasDisabled = true;
+
 
 setupSaboteurChoices();
 updateSubmitButton();
