@@ -507,7 +507,7 @@ input{
 <body>
 <!-- HOME / HUB -->
 <div class="screen active" id="home">
-  <h1>Pass n' Play</h1>
+  <h1>Pass n' Play!</h1>
   <div class="sub">
     Fun party games that only require one screen
   </div>
@@ -780,15 +780,12 @@ const sounds = {
 }
 
 function show(id, direction = "right") {
-  const current = document.querySelector(".screen.active");
+  document.querySelectorAll(".screen").forEach(s => {
+    s.classList.remove("active", "exit", "from-left", "from-right");
+  });
+
   const next = document.getElementById(id);
-
-  if (current === next) return;
-
-  if (current) {
-    current.classList.remove("active");
-    current.classList.add("exit");
-  }
+  if (!next) return;
 
   next.classList.add("active");
   next.classList.add(direction === "right" ? "from-right" : "from-left");
@@ -797,8 +794,6 @@ function show(id, direction = "right") {
     next.classList.remove("from-right", "from-left");
   });
 }
-
-
 
 const grid=document.getElementById('playerGrid');
 for(let i = 3; i <= 10; i++) {
@@ -1297,7 +1292,6 @@ function resetGame(){
   roles = [];
   idx = 0;
   guessedNumber = null;
-  show('');
 }
 
   document.addEventListener("keydown", handleKey);
