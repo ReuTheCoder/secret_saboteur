@@ -166,6 +166,10 @@ body{
   opacity: 0.9;
   animation: fall 1.8s linear forwards;
 }
+  #likelihoodHint {
+  display: none;
+}
+
 
 @keyframes fall {
   from {
@@ -765,7 +769,7 @@ let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
 let guessedNumber = null;
 let guessedSaboteurs = [];
   let submitWasDisabled = true;
-  let showLikelihoodHint = true;
+  let showLikelihoodHint = false;
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -1387,7 +1391,7 @@ if (likelihoodToggle) {
     </p>
     <button onclick="closeRules()">Got it!</button>
     <label class="hint-toggle">
-  <input type="checkbox" id="likelihoodToggle" checked>
+  <input type="checkbox" id="likelihoodToggle">
   Show Saboteur Likelihood Hint
 </label>
   </div>
