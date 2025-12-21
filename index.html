@@ -1238,7 +1238,15 @@ function triggerSubmitUnlock(btn) {
   el.classList.add("pulse");
 }
   
-function resetGame(){round=1;show('intro')}
+function resetGame(){
+  round = 1;
+  players = [];
+  roles = [];
+  idx = 0;
+  guess = null;
+  show('home');
+}
+
   document.addEventListener("keydown", handleKey);
 
   document.getElementById("likelihoodToggle").addEventListener("change", e => {
