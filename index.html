@@ -1207,7 +1207,7 @@ function closeRules() {
   startRound();
 }
 function getSaboteurLikelihood() {
-  if (saboteurCount === 0) return "None";
+  if (saboteurCount === 0 || 1) return "Low";
 
   // Example weighting
   if (saboteurCount >= 3) return "Very High";
