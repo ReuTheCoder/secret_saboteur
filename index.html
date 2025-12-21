@@ -119,13 +119,29 @@ body{
   transform: scale(0.95);
 }
 
-  .hint-toggle {
+ .hint-toggle {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   font-size: 0.9rem;
   color: var(--muted);
   margin-top: 12px;
+  line-height: 1.3;
+}
+
+.hint-toggle input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.hint-toggle {
+  flex-wrap: wrap;
+}
+
+  @media (max-width: 480px) {
+  .hint-toggle {
+    flex-direction: row;
+  }
 }
   .popup {
   position: fixed;
@@ -1010,18 +1026,12 @@ if (showLikelihoodHint) {
 
 function toGuess(){
   document.getElementById('guessPrompt').textContent = curPrompt.title;
-
-  const hint = document.getElementById("multiSaboteurHint");
-  if (saboteurCount > 1) {
-    hint.style.display = "block";
-  } else {
-    hint.style.display = "none";
-  }
   
 guessedNumber = null;
 guessedSaboteurs = [];
 guessedNobody = false;
 submitWasDisabled = true;
+  btn.classList.remove("unlock-animate");
 
 
 setupSaboteurChoices();
@@ -1210,16 +1220,13 @@ function closeRules() {
   }
   startRound();
 }
-function getSaboteurLikelihood() {
-  if (saboteurCount === 0 || 1) return "Low";
 
-  // Example weighting
-  if (saboteurCount >= 3) return "Very High";
+  function getSaboteurLikelihood() {
+  if (saboteurCount <= 1) return "Low";
   if (saboteurCount === 2) return "High";
-
-  // saboteurCount === 1
-  return Math.random() < 0.2 ? "Low" : "Medium";
+  return "Very High";
 }
+
   
   function setupSaboteurCountSelect(){
   const maxSab = getMaxSaboteurs(count);
@@ -1337,6 +1344,16 @@ function triggerSubmitUnlock(btn) {
   el.offsetHeight; // reset animation
   el.classList.add("pulse");
 }
+  function unlockAudio() {
+  Object.values(sounds).forEach(s => {
+    s.play().catch(()=>{});
+    s.pause();
+    s.currentTime = 0;
+  });
+  document.removeEventListener("click", unlockAudio);
+}
+
+document.addEventListener("click", unlockAudio);
   
 function resetGame(){
   round = 1;
@@ -1344,7 +1361,11 @@ function resetGame(){
   roles = [];
   idx = 0;
   guessedNumber = null;
+  guessedSaboteurs = [];
+  guessedNobody = false;
+  show("home");
 }
+
 
   document.addEventListener("keydown", handleKey);
 
