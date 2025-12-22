@@ -813,6 +813,8 @@ input{
   <button class="category-btn" data-cat="nature">Weather & Nature</button>
   <button class="category-btn" data-cat="science">Science & Tech</button>
   <button class="category-btn" data-cat="transport">Transportation</button>
+  <button class="category-btn" data-cat="custom">Custom Words</button>
+
 </div>
 
 </div>
@@ -820,6 +822,22 @@ input{
 
   <button onclick="startImposterNames()">Start Game →</button>
 </div>
+
+  <div class="screen" id="custom-words">
+  <h2>Custom Words</h2>
+  <div class="sub">Add as many as you want</div>
+
+  <div class="card">
+    <textarea
+      id="customWordInput"
+      placeholder="One word per line"
+      style="width:100%;min-height:160px;border-radius:12px;padding:12px;font-size:1rem;"
+    ></textarea>
+  </div>
+
+  <button onclick="confirmCustomWords()">Continue →</button>
+</div>
+  
 <div class="screen" id="imposter-names">
   <h2>Players & Imposters</h2>
 
@@ -1013,6 +1031,7 @@ let guessedSaboteurs = [];
   let submitWasDisabled = true;
   let showLikelihoodHint = false;
   let discussionStarterIndex = null;
+  let customWords = [];
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -1743,7 +1762,8 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
-  const selectedCats = document.querySelectorAll(".category-btn.active");
+  const selectedCats = [...document.querySelectorAll(".category-btn.active")]
+    .map(b => b.dataset.cat);
 
   if (selectedCats.length === 0) {
     document.getElementById("categoryGrid").classList.add("shake");
@@ -1751,7 +1771,45 @@ function startImposterNames() {
       document.getElementById("categoryGrid").classList.remove("shake"), 300
     );
     return;
-    
+  }
+
+  if (selectedCats.includes("custom")) {
+    show("custom-words");
+    return;
+  }
+
+  continueToImposterNames();
+}
+
+
+const wrap = document.getElementById("imposterNameInputs");
+wrap.innerHTML = "";
+
+  for (let i = 0; i < imposterPlayers; i++) {
+    wrap.innerHTML += `<input value="Player ${i + 1}">`;
+  }
+
+  imposterCount = 1;
+  updateImposterLimit();
+  show("imposter-names");
+}
+
+  function confirmCustomWords() {
+  const raw = document.getElementById("customWordInput").value;
+  customWords = raw
+    .split("\n")
+    .map(w => w.trim())
+    .filter(Boolean);
+
+  if (customWords.length === 0) {
+    alert("Please add at least one word.");
+    return;
+  }
+
+  continueToImposterNames();
+}
+
+  function continueToImposterNames() {
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
@@ -1807,7 +1865,17 @@ function startImposterRoles() {
   .map(b => b.dataset.cat);
 
   let pool = [];
-  selectedCats.forEach(cat => pool.push(...wordBank[cat]));
+  let pool = [];
+
+selectedCats.forEach(cat => {
+  if (cat !== "custom") {
+    pool.push(...wordBank[cat]);
+  }
+});
+
+if (customWords.length) {
+  pool.push(...customWords);
+}
   secretWord = pool[Math.floor(Math.random() * pool.length)];
 
   if (pool.length === 0) {
@@ -1877,6 +1945,11 @@ document.querySelectorAll(".category-btn").forEach(btn => {
     btn.classList.toggle("active");
   });
 });
+
+  document.addEventListener("DOMContentLoaded", () => {
+  show("home");
+});
+
 
 </script>
 <div id="sabPopup" class="popup hidden">
