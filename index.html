@@ -539,6 +539,7 @@ input{
       <button onclick="launchSecretSaboteur()">
         Secret Saboteur
       </button>
+      <button onclick="launchImposter()">Imposter</button>
     </div>
   </div>
 </div>
@@ -656,6 +657,92 @@ input{
 
   <button onclick="playAgain()">↻ Play Again</button>
   <button class="secondary" onclick="resetGame()">New Game</button>
+</div>
+
+  <div class="screen" id="imposter-setup">
+  <h1>Imposter</h1>
+  <div class="sub">Find the player who doesn’t know the word</div>
+
+  <div class="card">
+    <h2>Players</h2>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+      <button onclick="changeImposterPlayers(-1)">−</button>
+      <div id="imposterPlayerCount" style="font-size:1.4rem;font-weight:700;">3</div>
+      <button onclick="changeImposterPlayers(1)">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Categories</h2>
+
+    <label><input type="checkbox" value="objects" checked> Everyday Objects</label><br>
+    <label><input type="checkbox" value="food"> Food & Drinks</label><br>
+    <label><input type="checkbox" value="animals"> Animals</label>
+  </div>
+
+  <button onclick="startImposterNames()">Start Game →</button>
+</div>
+<div class="screen" id="imposter-names">
+  <h2>Players & Imposters</h2>
+
+  <div class="card" id="imposterNameInputs"></div>
+
+  <div class="card">
+    <h3>Imposters</h3>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+      <button onclick="changeImposterCount(-1)">−</button>
+      <div id="imposterCountDisplay">1</div>
+      <button onclick="changeImposterCount(1)">+</button>
+    </div>
+    <div class="sub" id="imposterLimitText"></div>
+  </div>
+
+  <button onclick="startImposterRoles()">Continue →</button>
+</div>
+
+  <div class="screen" id="imposter-role">
+  <div class="sub">Pass the device to</div>
+  <h2 id="imposterCurrentName"></h2>
+
+  <div class="flip-wrap">
+    <div class="flip" id="imposterFlip" onclick="toggleImposterFlip()">
+      <div class="face front">
+        <h2>Tap to Reveal</h2>
+      </div>
+      <div class="face back" id="imposterRoleBack"></div>
+    </div>
+  </div>
+
+  <button style="margin-top:20px" onclick="nextImposterPlayer()">Next Player</button>
+</div>
+
+ <div class="screen" id="imposter-discussion">
+  <h2>Discussion Time</h2>
+  <div class="sub" id="discussionStarter"></div>
+
+  <div class="card">
+    <p><b>Game started!</b></p>
+    <p>Discuss and catch the imposter.</p>
+  </div>
+
+  <button onclick="revealImposter()">Reveal Imposter</button>
+</div>
+
+  <div class="screen" id="imposter-results">
+  <h2>Results</h2>
+
+  <div class="card">
+    <p>The word was:</p>
+    <h2 id="imposterWordReveal"></h2>
+  </div>
+
+  <div class="card" style="background:black;color:white;">
+    <p>Imposter(s):</p>
+    <h3 id="imposterList"></h3>
+  </div>
+
+  <button onclick="launchImposter()">↻ Play Again</button>
+  <button class="secondary" onclick="show('home')">Back to Hub</button>
 </div>
 
 <script>
@@ -800,6 +887,10 @@ const sounds = {
   resetGame();      // ensures clean state
   show('intro');    // enters the game
 }
+  function launchImposter() {
+  show("imposter-setup");
+}
+
   function pushScreen(id) {
   const current = screenStack[screenStack.length - 1];
   const next = document.getElementById(id);
@@ -1371,6 +1462,115 @@ if (likelihoodToggle) {
   likelihoodToggle.addEventListener("change", e => {
     showLikelihoodHint = e.target.checked;
   });
+}
+/* === IMPOSTER GAME === */
+
+let imposterPlayers = 3;
+let imposterCount = 1;
+let imposterNames = [];
+let imposterRoles = [];
+let imposterIndex = 0;
+let secretWord = "";
+
+const wordBank = {
+  objects: ["Chair", "Phone", "Backpack", "Mirror", "Clock"],
+  food: ["Pizza", "Burger", "Ice Cream", "Pasta", "Coffee"],
+  animals: ["Dog", "Cat", "Elephant", "Lion", "Dolphin"]
+};
+
+function changeImposterPlayers(delta) {
+  imposterPlayers = Math.min(20, Math.max(3, imposterPlayers + delta));
+  document.getElementById("imposterPlayerCount").textContent = imposterPlayers;
+}
+
+function startImposterNames() {
+  const wrap = document.getElementById("imposterNameInputs");
+  wrap.innerHTML = "";
+
+  for (let i = 0; i < imposterPlayers; i++) {
+    wrap.innerHTML += `<input value="Player ${i + 1}">`;
+  }
+
+  imposterCount = 1;
+  updateImposterLimit();
+  show("imposter-names");
+}
+
+function updateImposterLimit() {
+  const max =
+    imposterPlayers < 6 ? 1 :
+    imposterPlayers < 11 ? 2 :
+    imposterPlayers < 16 ? 3 : 4;
+
+  imposterCount = Math.min(imposterCount, max);
+  document.getElementById("imposterCountDisplay").textContent = imposterCount;
+  document.getElementById("imposterLimitText").textContent =
+    `Up to ${max} imposter${max > 1 ? "s" : ""} allowed`;
+}
+
+function changeImposterCount(delta) {
+  imposterCount += delta;
+  updateImposterLimit();
+}
+
+function startImposterRoles() {
+  imposterNames = [...document.querySelectorAll("#imposterNameInputs input")]
+    .map(i => i.value || "Player");
+
+  // Pick categories
+  const selectedCats = [...document.querySelectorAll("#imposter-setup input[type=checkbox]:checked")]
+    .map(c => c.value);
+
+  let pool = [];
+  selectedCats.forEach(cat => pool.push(...wordBank[cat]));
+  secretWord = pool[Math.floor(Math.random() * pool.length)];
+
+  // Assign roles
+  imposterRoles = Array(imposterPlayers).fill("civilian");
+  const shuffled = [...Array(imposterPlayers).keys()].sort(() => Math.random() - 0.5);
+
+  for (let i = 0; i < imposterCount; i++) {
+    imposterRoles[shuffled[i]] = "imposter";
+  }
+
+  imposterIndex = 0;
+  showImposterRole();
+}
+
+function showImposterRole() {
+  document.getElementById("imposterCurrentName").textContent =
+    imposterNames[imposterIndex];
+
+  const role = imposterRoles[imposterIndex];
+  const back = document.getElementById("imposterRoleBack");
+
+  back.innerHTML = role === "imposter"
+    ? `<h2>IMPOSTER</h2><p>Blend in. Guess the word.</p>`
+    : `<h2>${secretWord}</h2><p>Give related clues.</p>`;
+
+  document.getElementById("imposterFlip").classList.remove("revealed");
+  show("imposter-role");
+}
+
+function toggleImposterFlip() {
+  document.getElementById("imposterFlip").classList.toggle("revealed");
+}
+
+function nextImposterPlayer() {
+  imposterIndex++;
+  if (imposterIndex < imposterPlayers) showImposterRole();
+  else {
+    document.getElementById("discussionStarter").textContent =
+      `Start with ${imposterNames[Math.floor(Math.random() * imposterNames.length)]}`;
+    show("imposter-discussion");
+  }
+}
+
+function revealImposter() {
+  document.getElementById("imposterWordReveal").textContent = secretWord;
+  document.getElementById("imposterList").textContent =
+    imposterNames.filter((_, i) => imposterRoles[i] === "imposter").join(", ");
+  show("imposter-results");
 }
 
 </script>
