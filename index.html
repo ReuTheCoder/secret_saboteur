@@ -1844,8 +1844,9 @@ function updateImposterLimit() {
 
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
   document.getElementById("imposterLimitText").textContent =
-    `Max imposters: ${max}`;
+    `Max ${max} imposter${max > 1 ? "s" : ""} allowed`;
 }
+
 
 
 function changeImposterCount(delta) {
@@ -1875,7 +1876,7 @@ function startImposterRoles() {
     .map(i => i.value || "Player");
 
   // Pick categories
-  const selectedCats = [document.querySelectorAll(".category-btn.active")]
+  const selectedCats = [...document.querySelectorAll(".category-btn.active")]
   .map(b => b.dataset.cat);
 
   let pool = [];
