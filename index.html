@@ -376,11 +376,9 @@ body{
 .screen.from-left {
   transform: translateX(-24px);
 }
-  
- #saboteurDiscussionStarter,
-#imposterDiscussionStarter {
+  #discussionStarter {
   font-size: 1.1rem;
-  color: var(--primary);
+  color: var(--primary-dark);
 }
 
 
@@ -564,30 +562,14 @@ input{
   line-height: 1.2;
 }
 .category-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-
-  padding: 12px;
-  min-height: 60px;
-
-  white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-
-  line-height: 1.2;
+  word-break: break-word;
 }
-
 
 .category-btn.active {
-  transform: scale(1.07);
-  box-shadow:
-    0 0 0 3px rgba(0,188,212,0.5),
-    0 0 22px rgba(0,188,212,0.85),
-    0 0 42px rgba(0,188,212,0.45);
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
-
   #imposterNameInputs input {
   margin-bottom: 18px;
 }
@@ -799,22 +781,10 @@ input{
   <h2>Categories</h2>
 
   <div class="grid" id="categoryGrid">
-  <button class="category-btn active" data-cat="objects">Everyday Objects</button>
-  <button class="category-btn" data-cat="food">Food & Drinks</button>
-  <button class="category-btn" data-cat="animals">Animals</button>
-  <button class="category-btn" data-cat="colors">Colors</button>
-  <button class="category-btn" data-cat="shapes">Shapes</button>
-  <button class="category-btn" data-cat="emotions">Emotions & Feelings</button>
-  <button class="category-btn" data-cat="music">Music</button>
-  <button class="category-btn" data-cat="brands">Brands</button>
-  <button class="category-btn" data-cat="hobbies">Hobbies & Sports</button>
-  <button class="category-btn" data-cat="movies">Movies & TV</button>
-  <button class="category-btn" data-cat="jobs">Occupations</button>
-  <button class="category-btn" data-cat="nature">Weather & Nature</button>
-  <button class="category-btn" data-cat="science">Science & Tech</button>
-  <button class="category-btn" data-cat="transport">Transportation</button>
-</div>
-
+    <button class="category-btn active" data-cat="objects">Everyday Objects</button>
+    <button class="category-btn" data-cat="food">Food & Drinks</button>
+    <button class="category-btn" data-cat="animals">Animals</button>
+  </div>
 </div>
 
 
@@ -1625,20 +1595,8 @@ let secretWord = "";
 const wordBank = {
   objects: ["Chair", "Phone", "Backpack", "Mirror", "Clock"],
   food: ["Pizza", "Burger", "Ice Cream", "Pasta", "Coffee"],
-  animals: ["Dog", "Cat", "Elephant", "Lion", "Dolphin"],
-  colors: ["Red", "Blue", "Green", "Yellow", "Purple"],
-  shapes: ["Circle", "Square", "Triangle", "Rectangle", "Star"],
-  emotions: ["Happy", "Angry", "Nervous", "Excited", "Lonely"],
-  music: ["Guitar", "Drums", "Pop", "Rock", "Piano"],
-  brands: ["Nike", "Apple", "Coca-Cola", "McDonald's", "Adidas"],
-  hobbies: ["Drawing", "Gaming", "Swimming", "Cooking", "Skateboarding"],
-  movies: ["Inception", "Titanic", "Avatar", "Frozen", "Toy Story"],
-  jobs: ["Doctor", "Teacher", "Engineer", "Chef", "Pilot"],
-  nature: ["Rain", "Forest", "Ocean", "Mountain", "Wind"],
-  science: ["Robot", "Gravity", "Electricity", "Internet", "DNA"],
-  transport: ["Car", "Train", "Plane", "Bicycle", "Bus"]
+  animals: ["Dog", "Cat", "Elephant", "Lion", "Dolphin"]
 };
-
 
 function changeImposterPlayers(delta) {
   imposterPlayers = Math.min(20, Math.max(3, imposterPlayers + delta));
@@ -1646,15 +1604,6 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
-  const selectedCats = document.querySelectorAll(".category-btn.active");
-
-  if (selectedCats.length === 0) {
-    document.getElementById("categoryGrid").classList.add("shake");
-    setTimeout(() =>
-      document.getElementById("categoryGrid").classList.remove("shake"), 300
-    );
-    return;
-    
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
@@ -1713,11 +1662,6 @@ function startImposterRoles() {
   selectedCats.forEach(cat => pool.push(...wordBank[cat]));
   secretWord = pool[Math.floor(Math.random() * pool.length)];
 
-  if (pool.length === 0) {
-  alert("Please select at least one category.");
-  return;
-}
-
   // Assign roles
   imposterRoles = Array(imposterPlayers).fill("civilian");
   const shuffled = [...Array(imposterPlayers).keys()].sort(() => Math.random() - 0.5);
@@ -1739,12 +1683,7 @@ function showImposterRole() {
 
   back.innerHTML = role === "imposter"
     ? `<div class="imposter-card"> <h2>IMPOSTER</h2> <p>Blend in. Guess the word.</p> </div>`
-    : `
-<div class="imposter-card">
-  <p class="word-label">The secret word is…</p>
-  <h2 class="secret-word">${secretWord}</h2>
-  <p>Give related clues.</p>
-</div>`;
+    : `<div class="word-label"> <p>The secret word is…</p> <h2 class="secret-word">${secretWord}</h2> <p>Give related clues.</p> </div>`;
 
   document.getElementById("imposterFlip").classList.remove("revealed");
   show("imposter-role");
