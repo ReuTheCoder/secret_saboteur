@@ -1032,6 +1032,8 @@ let guessedSaboteurs = [];
   let showLikelihoodHint = false;
   let discussionStarterIndex = null;
   let customWords = [];
+  let customWords = JSON.parse(localStorage.getItem("customWords") || "[]");
+
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -1181,7 +1183,7 @@ function getActualSaboteurCount(maxSaboteurs) {
 }
 
 function startRound(){
-  players=[...document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
+  players=[document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
   roles = Array(count).fill('teammate');
 
 // Assign Guesser
@@ -1191,7 +1193,7 @@ roles[guesserIndex] = 'guesser';
 
 
 // Assign Saboteurs
-let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
+let available = [Array(count).keys()].filter(i => i !== guesserIndex);
 
 const actualSaboteurCount = getActualSaboteurCount(saboteurCount);
 
@@ -1762,7 +1764,7 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
-  const selectedCats = [...document.querySelectorAll(".category-btn.active")]
+  const selectedCats = [document.querySelectorAll(".category-btn.active")]
     .map(b => b.dataset.cat);
 
   if (selectedCats.length === 0) {
@@ -1774,10 +1776,9 @@ function startImposterNames() {
   }
 
   if (selectedCats.includes("custom")) {
-    show("custom-words");
-    return;
-  }
-
+  showCustomWordsScreen();
+  return;
+}
   continueToImposterNames();
 }
 
@@ -1794,8 +1795,23 @@ wrap.innerHTML = "";
   show("imposter-names");
 }
 
+  function chooseSecretWord(categories) {
+  let pool = [];
+
+  categories.forEach(cat => {
+    if (cat === "custom") {
+      pool.push(...customWords);
+    } else {
+      pool.push(...wordBank[cat]);
+    }
+  });
+
+  secretWord = pool[Math.floor(Math.random() * pool.length)];
+}
+
   function confirmCustomWords() {
   const raw = document.getElementById("customWordInput").value;
+
   customWords = raw
     .split("\n")
     .map(w => w.trim())
@@ -1806,7 +1822,16 @@ wrap.innerHTML = "";
     return;
   }
 
+  //save
+  localStorage.setItem("customWords", JSON.stringify(customWords));
+
   continueToImposterNames();
+}
+
+  function showCustomWordsScreen() {
+  document.getElementById("customWordInput").value =
+    customWords.join("\n");
+  show("custom-words");
 }
 
   function continueToImposterNames() {
@@ -1829,10 +1854,12 @@ function updateImposterLimit() {
     imposterPlayers < 16 ? 3 : 4;
 
   imposterCount = Math.min(imposterCount, max);
+
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
   document.getElementById("imposterLimitText").textContent =
-    `Up to ${max} imposter${max > 1 ? "s" : ""} allowed`;
+    `Max imposters: ${max}`;
 }
+
 
 function changeImposterCount(delta) {
   const min = 1;
@@ -1857,11 +1884,11 @@ function changeImposterCount(delta) {
 }
   
 function startImposterRoles() {
-  imposterNames = [...document.querySelectorAll("#imposterNameInputs input")]
+  imposterNames = [document.querySelectorAll("#imposterNameInputs input")]
     .map(i => i.value || "Player");
 
   // Pick categories
-  const selectedCats = [...document.querySelectorAll(".category-btn.active")]
+  const selectedCats = [document.querySelectorAll(".category-btn.active")]
   .map(b => b.dataset.cat);
 
   let pool = [];
@@ -1869,12 +1896,12 @@ function startImposterRoles() {
 
 selectedCats.forEach(cat => {
   if (cat !== "custom") {
-    pool.push(...wordBank[cat]);
+    pool.push(wordBank[cat]);
   }
 });
 
 if (customWords.length) {
-  pool.push(...customWords);
+  pool.push(customWords);
 }
   secretWord = pool[Math.floor(Math.random() * pool.length)];
 
@@ -1885,7 +1912,7 @@ if (customWords.length) {
 
   // Assign roles
   imposterRoles = Array(imposterPlayers).fill("civilian");
-  const shuffled = [...Array(imposterPlayers).keys()].sort(() => Math.random() - 0.5);
+  const shuffled = [Array(imposterPlayers).keys()].sort(() => Math.random() - 0.5);
 
   for (let i = 0; i < imposterCount; i++) {
     imposterRoles[shuffled[i]] = "imposter";
