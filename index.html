@@ -370,6 +370,11 @@ body{
 .screen.from-left {
   transform: translateX(-24px);
 }
+  #discussionStarter {
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+}
+
 
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -641,6 +646,8 @@ input{
 <!-- DISCUSSION -->
 <div class="screen" id="discussion">
   <h2>Discussion Time</h2>
+  <h3 id="discussionStarter" style="text-align:center;margin-top:8px"></h3>
+
   <div class="sub">Each player gives an answer</div>
 
   <h3 id="promptText"></h3>
@@ -924,6 +931,7 @@ let guessedNumber = null;
 let guessedSaboteurs = [];
   let submitWasDisabled = true;
   let showLikelihoodHint = false;
+  let discussionStarterIndex = null;
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -1140,6 +1148,13 @@ function nextPlayer(){
 }
 
 function startDiscussion(){
+   const eligible = roles
+    .map((r, i) => r !== "guesser" ? i : null)
+    .filter(i => i !== null);
+
+  discussionStarterIndex =
+    eligible[Math.floor(Math.random() * eligible.length)];
+  
   const scale = document.getElementById('scaleBar');
 scale.style.animation = 'none';
 scale.offsetHeight; // reflow
@@ -1162,6 +1177,9 @@ if (showLikelihoodHint) {
 } else {
   hintEl.style.display = "none";
 }
+  document.getElementById("discussionStarter").innerHTML =
+  `<strong>${players[discussionStarterIndex]}</strong> starts the discussion`;
+
   show('discussion');
   pulseScale();
 }
@@ -1629,7 +1647,7 @@ function nextImposterPlayer() {
   if (imposterIndex < imposterPlayers) showImposterRole();
   else {
     document.getElementById("discussionStarter").textContent =
-      `Start with <b> ${imposterNames[Math.floor(Math.random() * imposterNames.length)]}</b>`;
+      `Start with <strong>${imposterNames[Math.floor(Math.random() * imposterNames.length)]}</strong>`;
     show("imposter-discussion");
   }
 }
