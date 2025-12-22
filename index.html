@@ -775,7 +775,7 @@ input{
 
  <div class="screen" id="imposter-discussion">
   <h2>Discussion Time</h2>
-  <div class="sub" id="discussionStarter"></div>
+   <h3 id="discussionStarter" style="text-align:center;margin-top:8px"></h3>
 
   <div class="card">
     <p><b>Game started!</b></p>
@@ -1647,7 +1647,7 @@ function nextImposterPlayer() {
   if (imposterIndex < imposterPlayers) showImposterRole();
   else {
     document.getElementById("discussionStarter").textContent =
-      `Start with <strong>${imposterNames[Math.floor(Math.random() * imposterNames.length)]}</strong>`;
+      `Start with ${imposterNames[Math.floor(Math.random() * imposterNames.length)]}`;
     show("imposter-discussion");
   }
 }
