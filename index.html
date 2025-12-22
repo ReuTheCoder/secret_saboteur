@@ -1031,8 +1031,8 @@ let guessedSaboteurs = [];
   let submitWasDisabled = true;
   let showLikelihoodHint = false;
   let discussionStarterIndex = null;
-  let customWords = [];
-  let customWords = JSON.parse(localStorage.getItem("customWords") || "[]");
+ let customWords = JSON.parse(localStorage.getItem("customWords") || "[]");
+
 
 
 const sounds = {
@@ -1780,19 +1780,6 @@ function startImposterNames() {
   return;
 }
   continueToImposterNames();
-}
-
-
-const wrap = document.getElementById("imposterNameInputs");
-wrap.innerHTML = "";
-
-  for (let i = 0; i < imposterPlayers; i++) {
-    wrap.innerHTML += `<input value="Player ${i + 1}">`;
-  }
-
-  imposterCount = 1;
-  updateImposterLimit();
-  show("imposter-names");
 }
 
   function chooseSecretWord(categories) {
