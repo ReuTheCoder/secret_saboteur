@@ -598,6 +598,30 @@ input{
   margin-top: -4;
 
 }
+.category-btn {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+.category-btn.active {
+  transform: scale(1.05);
+  box-shadow: 0 6px 18px rgba(0,188,212,0.35);
+}
+
+.category-btn:active {
+  transform: scale(0.96);
+}
+@keyframes selectPop {
+  0%   { transform: scale(0.95); }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.category-btn.active {
+  animation: selectPop 0.25s ease;
+}
 
   
 </style>
@@ -673,7 +697,7 @@ input{
 <!-- DISCUSSION -->
 <div class="screen" id="discussion">
   <h2>Discussion Time</h2>
-  <h3 id="discussionStarter" style="text-align:center;margin-top:8px"></h3>
+  <h3 id="saboteurDiscussionStarter" style="text-align:center;margin-top:8px"></h3>
 
   <div class="sub">Each player gives an answer</div>
 
@@ -802,7 +826,7 @@ input{
 
  <div class="screen" id="imposter-discussion">
   <h2>Discussion Time</h2>
-   <h3 id="discussionStarter" style="text-align:center;margin-top:8px"></h3>
+   <h3 id="imposterDiscussionStarter" style="text-align:center;margin-top:8px"></h3>
 
   <div class="card">
     <p><b>Game started!</b></p>
@@ -1204,7 +1228,7 @@ if (showLikelihoodHint) {
 } else {
   hintEl.style.display = "none";
 }
-  document.getElementById("discussionStarter").innerHTML =
+  document.getElementById("saboteurDiscussionStarter").innerHTML =
   `<strong>${players[discussionStarterIndex]}</strong> starts the discussion`;
 
   show('discussion');
@@ -1673,8 +1697,12 @@ function nextImposterPlayer() {
   imposterIndex++;
   if (imposterIndex < imposterPlayers) showImposterRole();
   else {
-    document.getElementById("discussionStarter").textContent =
-      `Start with ${imposterNames[Math.floor(Math.random() * imposterNames.length)]}`;
+    const starter =
+  imposterNames[Math.floor(Math.random() * imposterNames.length)];
+
+document.getElementById("imposterDiscussionStarter").innerHTML =
+  `<strong>${starter}</strong> starts the discussion`;
+
     show("imposter-discussion");
   }
 }
