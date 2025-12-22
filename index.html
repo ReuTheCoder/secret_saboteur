@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Secret Saboteur</title>
+<title>Pass n' Play</title>
 
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -331,14 +331,20 @@ body{
   opacity: 0.8;
 }
   #home .grid {
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
- 
+
 #home .grid button {
-  width: auto;
-  min-width: 180px;
+  width: 100%;
+  max-width: 100%;
+}
+  
+@media (min-width: 600px) {
+  #home .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
   /* Screen transitions */
@@ -544,10 +550,19 @@ input{
   border-radius: 12px;
 }
 
-  .category-btn {
-  background: white;
-  color: var(--text);
-  border: 2px solid #e0e0e0;
+ .category-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 12px;
+  min-height: 56px;
+  white-space: normal;
+  line-height: 1.2;
+}
+.category-btn {
+  word-break: break-word;
 }
 
 .category-btn.active {
@@ -572,6 +587,18 @@ input{
   .button-stack button + button {
   margin-top: 12px;
 }
+.word-label {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.secret-word {
+  color: white;
+  margin-top: -4;
+
+}
+
   
 </style>
 </head>
@@ -715,7 +742,7 @@ input{
 
   <div class="screen" id="imposter-setup">
   <h1>Imposter</h1>
-  <div class="sub">Find the player who doesn’t know the word</div>
+  <div class="sub">Secret word social deduction</div>
 
   <div class="card">
     <h2>Players</h2>
@@ -1632,7 +1659,7 @@ function showImposterRole() {
 
   back.innerHTML = role === "imposter"
     ? `<div class="imposter-card"> <h2>IMPOSTER</h2> <p>Blend in. Guess the word.</p> </div>`
-    : `<p class="sub">The secret word is…</p> <h2>${secretWord}</h2> <p>Give related clues.</p>`;
+    : `<div class="word-label"> <p>The secret word is…</p> <h2 class="secret-word">${secretWord}</h2> <p>Give related clues.</p> </div>`;
 
   document.getElementById("imposterFlip").classList.remove("revealed");
   show("imposter-role");
