@@ -603,6 +603,20 @@ input{
 
 }
 .category-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  padding: 12px;
+  min-height: 64px;
+
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+
+  line-height: 1.2;
+
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
@@ -626,7 +640,11 @@ input{
 .category-btn.active {
   animation: selectPop 0.25s ease;
 }
-
+#categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
   
 </style>
 </head>
@@ -1008,11 +1026,11 @@ const sounds = {
 
 /* --- FLOW --- */
   function launchSecretSaboteur() {
-  resetGame();      // ensures clean state
-  show('intro');    // enters the game
+ 
+  replaceWith('intro');    // enters the game
 }
   function launchImposter() {
-  show("imposter-setup");
+  replaceWith("imposter-setup");
 }
 
   function pushScreen(id) {
