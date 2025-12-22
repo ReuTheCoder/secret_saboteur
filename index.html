@@ -376,11 +376,11 @@ body{
 .screen.from-left {
   transform: translateX(-24px);
 }
-  #discussionStarter {
+  #saboteurDiscussionStarter,
+#imposterDiscussionStarter {
   font-size: 1.1rem;
-  color: var(--primary-dark);
+  color: var(--primary);
 }
-
 
 h1,h2{text-align:center;margin:0}
 h1{font-size:2.2rem}
@@ -1728,6 +1728,15 @@ function changeImposterPlayers(delta) {
 
 function startImposterNames() {
   
+  const selectedCats = document.querySelectorAll(".category-btn.active");
+
+  if (selectedCats.length === 0) {
+    document.getElementById("categoryGrid").classList.add("shake");
+    setTimeout(() =>
+      document.getElementById("categoryGrid").classList.remove("shake"), 300
+    );
+    return;
+    
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
@@ -1807,7 +1816,12 @@ function showImposterRole() {
 
   back.innerHTML = role === "imposter"
     ? `<div class="imposter-card"> <h2>IMPOSTER</h2> <p>Blend in. Guess the word.</p> </div>`
-    : `<div class="word-label"> <p>The secret word is…</p> <h2 class="secret-word">${secretWord}</h2> <p>Give related clues.</p> </div>`;
+    : `
+<div class="imposter-card">
+  <p class="word-label">The secret word is…</p>
+  <h2 class="secret-word">${secretWord}</h2>
+  <p>Give related clues.</p>
+</div>`;
 
   document.getElementById("imposterFlip").classList.remove("revealed");
   show("imposter-role");
