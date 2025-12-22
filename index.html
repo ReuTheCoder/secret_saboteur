@@ -557,18 +557,22 @@ input{
   text-align: center;
 
   padding: 12px;
-  min-height: 56px;
+  min-height: 60px;
+
   white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+
   line-height: 1.2;
-}
-.category-btn {
-  word-break: break-word;
+   word-break: break-word;
 }
 
 .category-btn.active {
-  background: var(--primary);
-  color: white;
-  border-color: var(--primary);
+  transform: scale(1.07);
+  box-shadow:
+    0 0 0 3px rgba(0,188,212,0.5),
+    0 0 22px rgba(0,188,212,0.85),
+    0 0 42px rgba(0,188,212,0.45);
 }
   #imposterNameInputs input {
   margin-bottom: 18px;
@@ -780,11 +784,21 @@ input{
  <div class="card">
   <h2>Categories</h2>
 
-  <div class="grid" id="categoryGrid">
-    <button class="category-btn active" data-cat="objects">Everyday Objects</button>
-    <button class="category-btn" data-cat="food">Food & Drinks</button>
-    <button class="category-btn" data-cat="animals">Animals</button>
-  </div>
+ <div class="grid" id="categoryGrid">
+  <button class="category-btn active" data-cat="objects">Everyday Objects</button>
+  <button class="category-btn" data-cat="food">Food & Drinks</button>
+  <button class="category-btn" data-cat="animals">Animals</button>
+  <button class="category-btn" data-cat="colors">Colors</button>
+  <button class="category-btn" data-cat="shapes">Shapes</button>
+  <button class="category-btn" data-cat="emotions">Emotions & Feelings</button>
+  <button class="category-btn" data-cat="music">Music</button>
+  <button class="category-btn" data-cat="brands">Brands</button>
+  <button class="category-btn" data-cat="hobbies">Hobbies & Sports</button>
+  <button class="category-btn" data-cat="movies">Movies & TV</button>
+  <button class="category-btn" data-cat="jobs">Occupations</button>
+  <button class="category-btn" data-cat="nature">Weather & Nature</button>
+  <button class="category-btn" data-cat="science">Science & Tech</button>
+  <button class="category-btn" data-cat="transport">Transportation</button>
 </div>
 
 
@@ -1593,10 +1607,119 @@ let imposterIndex = 0;
 let secretWord = "";
 
 const wordBank = {
-  objects: ["Chair", "Phone", "Backpack", "Mirror", "Clock"],
-  food: ["Pizza", "Burger", "Ice Cream", "Pasta", "Coffee"],
-  animals: ["Dog", "Cat", "Elephant", "Lion", "Dolphin"]
+  objects: [
+    "Chair","Table","Phone","Backpack","Mirror","Clock","Lamp","Notebook","Pen","Wallet",
+    "Keys","Bottle","Glasses","Remote","Couch","Pillow","Blanket","Fan","Headphones","Watch",
+    "Scissors","Towel","Mug","Plate","Fork","Spoon","Knife","Bag","Shoes","Hat",
+    "Jacket","Umbrella","Charger","Cable","Keyboard","Mouse","Screen","Book","Box","Shelf",
+    "Door","Window","Frame","Candle","Coin","Brush","Comb","Basket","Bin","Folder"
+  ],
+
+  food: [
+    "Pizza","Burger","Pasta","Rice","Soup","Sandwich","Salad","Tacos","Fries","Noodles",
+    "Ice Cream","Cake","Cookies","Chocolate","Donut","Pancakes","Waffles","Cereal","Yogurt","Cheese",
+    "Apple","Banana","Orange","Strawberry","Grapes","Chicken","Steak","Fish","Eggs","Bacon",
+    "Sausage","Bread","Butter","Jam","Honey","Milk","Juice","Coffee","Tea","Smoothie",
+    "Chips","Popcorn","Pretzels","Sushi","Ramen","Curry","Dumplings","Pie","Brownies","Muffins"
+  ],
+
+  animals: [
+    "Dog","Cat","Horse","Cow","Pig","Sheep","Goat","Chicken","Duck","Goose",
+    "Lion","Tiger","Elephant","Giraffe","Zebra","Bear","Wolf","Fox","Deer","Moose",
+    "Monkey","Gorilla","Chimpanzee","Panda","Kangaroo","Koala","Sloth","Rabbit","Squirrel","Mouse",
+    "Rat","Hamster","Hedgehog","Bat","Owl","Eagle","Hawk","Parrot","Penguin","Flamingo",
+    "Dolphin","Whale","Shark","Octopus","Crab","Lobster","Frog","Toad","Snake","Lizard"
+  ],
+
+  colors: [
+    "Red","Blue","Green","Yellow","Orange","Purple","Pink","Brown","Black","White",
+    "Gray","Beige","Tan","Teal","Turquoise","Cyan","Magenta","Maroon","Navy","Olive",
+    "Mint","Lavender","Peach","Coral","Gold","Silver","Bronze","Indigo","Violet","Plum",
+    "Crimson","Scarlet","Amber","Aqua","Ivory","Charcoal","Slate","Sand","Sky Blue","Forest Green",
+    "Rose","Lilac","Mustard","Copper","Rust","Emerald","Sapphire","Ruby","Pearl","Chocolate"
+  ],
+
+  shapes: [
+    "Circle","Square","Triangle","Rectangle","Oval","Diamond","Star","Heart","Pentagon","Hexagon",
+    "Octagon","Cube","Sphere","Cylinder","Cone","Pyramid","Prism","Rhombus","Trapezoid","Parallelogram",
+    "Arrow","Cross","Spiral","Wave","Crescent","Ring","Donut","Bolt","Cloud","Teardrop",
+    "Shield","Badge","Chevron","Zigzag","Flower","Snowflake","Gear","Plus","Minus","Infinity",
+    "Keyhole","Explosion","Burst","Frame","Outline","Blob","Spike","Grid","Maze","Path"
+  ],
+
+  emotions: [
+    "Happy","Sad","Angry","Excited","Nervous","Calm","Relaxed","Stressed","Anxious","Confident",
+    "Proud","Embarrassed","Shy","Lonely","Loved","Jealous","Hopeful","Bored","Curious","Confused",
+    "Surprised","Shocked","Scared","Brave","Fearful","Content","Peaceful","Overwhelmed","Frustrated","Motivated",
+    "Inspired","Disappointed","Grateful","Guilty","Ashamed","Joyful","Cheerful","Moody","Tired","Energetic",
+    "Playful","Serious","Determined","Uncertain","Optimistic","Pessimistic","Satisfied","Restless","Awkward","Amused"
+  ],
+
+  music: [
+    "Song","Album","Playlist","Concert","Band","Singer","Guitar","Piano","Drums","Violin",
+    "Bass","Microphone","Speaker","Headphones","Radio","DJ","Beat","Melody","Harmony","Rhythm",
+    "Pop","Rock","Hip Hop","Rap","Jazz","Blues","Classical","Country","Electronic","EDM",
+    "Indie","Folk","Metal","Punk","Reggae","R&B","Soul","Opera","Karaoke","Remix",
+    "Chorus","Verse","Hook","Bridge","Tempo","Volume","Lyrics","Tune","Track","Jam"
+  ],
+
+  brands: [
+    "Apple","Google","Samsung","Nike","Adidas","Puma","Coca-Cola","Pepsi","McDonald's","Burger King",
+    "Starbucks","Amazon","Netflix","Disney","YouTube","TikTok","Instagram","Snapchat","Xbox","PlayStation",
+    "Nintendo","Sony","LG","Microsoft","Intel","AMD","Tesla","Ford","Toyota","Honda",
+    "IKEA","Walmart","Target","Costco","eBay","PayPal","Visa","Mastercard","Spotify","Uber",
+    "Airbnb","Zoom","Slack","Discord","Reddit","Twitter","LinkedIn","Pinterest","Dropbox","Canva"
+  ],
+
+  hobbies: [
+    "Gaming","Drawing","Painting","Reading","Writing","Cooking","Baking","Gardening","Knitting","Sewing",
+    "Photography","Filmmaking","Dancing","Singing","Acting","Running","Jogging","Hiking","Camping","Fishing",
+    "Swimming","Surfing","Skateboarding","Cycling","Yoga","Meditation","Weightlifting","Climbing","Martial Arts","Boxing",
+    "Soccer","Basketball","Baseball","Football","Hockey","Tennis","Badminton","Volleyball","Bowling","Golf",
+    "Chess","Board Games","Card Games","Puzzles","Model Building","Woodworking","Coding","Robotics","Collecting","Cosplay"
+  ],
+
+  movies: [
+    "Inception","Titanic","Avatar","Frozen","Toy Story","The Matrix","Jurassic Park","Star Wars","Harry Potter","Lord of the Rings",
+    "Marvel","Batman","Spider-Man","Iron Man","The Avengers","The Lion King","Finding Nemo","Up","Wall-E","Shrek",
+    "Minions","Despicable Me","The Incredibles","Coco","Inside Out","Moana","Aladdin","Beauty and the Beast","Mulan","Hercules",
+    "Jaws","Rocky","Terminator","Alien","Predator","Back to the Future","Indiana Jones","Ghostbusters","Die Hard","Home Alone",
+    "The Notebook","La La Land","The Godfather","Pulp Fiction","Forrest Gump","Fight Club","Interstellar","Gladiator","Braveheart","Dune"
+  ],
+
+  jobs: [
+    "Doctor","Nurse","Teacher","Professor","Student","Engineer","Programmer","Developer","Designer","Artist",
+    "Writer","Journalist","Editor","Photographer","Videographer","Actor","Musician","Singer","Dancer","DJ",
+    "Chef","Cook","Baker","Waiter","Barista","Cashier","Manager","CEO","Entrepreneur","Marketer",
+    "Salesperson","Accountant","Banker","Economist","Analyst","Consultant","Lawyer","Judge","Paralegal","Police Officer",
+    "Detective","Firefighter","Paramedic","EMT","Surgeon","Dentist","Veterinarian","Pharmacist","Scientist","Researcher"
+  ],
+
+  nature: [
+    "Rain","Snow","Hail","Sleet","Wind","Breeze","Storm","Thunder","Lightning","Fog",
+    "Cloud","Sky","Sun","Moon","Stars","Rainbow","Dawn","Sunrise","Sunset","Dusk",
+    "Forest","Jungle","Desert","Savanna","Plains","Valley","Canyon","Mountain","Hill","Volcano",
+    "River","Stream","Creek","Lake","Pond","Ocean","Sea","Beach","Coast","Shore",
+    "Island","Waterfall","Glacier","Iceberg","Tundra","Swamp","Marsh","Bog","Reef","Lagoon"
+  ],
+
+  science: [
+    "Robot","AI","Computer","Internet","Algorithm","Code","Program","Software","Hardware","Circuit",
+    "Electricity","Battery","Energy","Power","Magnet","Gravity","Force","Motion","Speed","Velocity",
+    "Atom","Molecule","Cell","DNA","Gene","Protein","Virus","Bacteria","Vaccine","Antibody",
+    "Planet","Star","Galaxy","Universe","Asteroid","Comet","Meteor","Black Hole","Orbit","Telescope",
+    "Microscope","Experiment","Hypothesis","Theory","Data","Research","Analysis","Lab","Discovery","Innovation"
+  ],
+
+  transport: [
+    "Car","Truck","Van","Bus","Taxi","Uber","Train","Subway","Metro","Tram",
+    "Bicycle","Motorcycle","Scooter","Skateboard","Rollerblades","Boat","Ship","Ferry","Yacht","Canoe",
+    "Kayak","Jet Ski","Plane","Airplane","Jet","Helicopter","Glider","Rocket","Spaceship","Shuttle",
+    "Airport","Runway","Terminal","Station","Platform","Ticket","Seat","Wheel","Engine","Motor",
+    "Fuel","Gas","Diesel","Electric","Hybrid","Traffic","Road","Highway","Bridge","Tunnel"
+  ]
 };
+
 
 function changeImposterPlayers(delta) {
   imposterPlayers = Math.min(20, Math.max(3, imposterPlayers + delta));
@@ -1604,6 +1727,7 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
+  
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
