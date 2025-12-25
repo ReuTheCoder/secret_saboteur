@@ -640,6 +640,14 @@ input{
   opacity: 0;
   transform: translateX(24px);
 }
+  /* FORCE CATEGORY BUTTONS TO FILL SPACE */
+#categoryGrid button {
+  max-width: 100%;       /* Override the 90px limit */
+  width: 100%;           /* Fill the grid cell */
+  min-height: 70px;      /* Make them tall enough for 2 lines of text */
+  padding: 8px;          /* Adjust padding */
+  font-size: 0.95rem;    /* Slightly smaller text to fit long words */
+}
 
 
   
@@ -1455,18 +1463,36 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
+  // 1. Reset Game State
   imposterNames = [];
   imposterRoles = [];
   imposterIndex = 0;
 
+  // 2. Generate Inputs safely
   const wrap = document.getElementById("imposterNameInputs");
-  wrap.innerHTML = "";
-
-  for (let i = 0; i < imposterPlayers; i++) {
-    wrap.innerHTML += `<input value="Player ${i + 1}">`;
+  if (wrap) {
+    let inputsHTML = "";
+    // Ensure imposterPlayers is a valid number, default to 3 if not
+    const count = parseInt(imposterPlayers) || 3; 
+    
+    for (let i = 0; i < count; i++) {
+      inputsHTML += `<input type="text" value="Player ${i + 1}" placeholder="Player ${i+1}">`;
+    }
+    wrap.innerHTML = inputsHTML;
+  } else {
+    console.error("Could not find element: imposterNameInputs");
   }
+
+  // 3. Switch Screen
   show("imposter-names");
-  updateImposterLimit(); // Ensure limits update when name screen loads
+  
+  // 4. Update the limits for the new player count
+  // We wrap this in a timeout to ensure the DOM is ready
+  setTimeout(() => {
+      if(typeof updateImposterLimit === "function") {
+          updateImposterLimit();
+      }
+  }, 10);
 }
 
 function updateImposterLimit() {
