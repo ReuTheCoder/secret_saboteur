@@ -630,12 +630,18 @@ input{
  #categoryGrid {
   grid-template-columns: repeat(2, 1fr);
 }
-
-@media (min-width: 600px) {
-  #categoryGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  /* Exit transitions */
+.screen.exit-left {
+  opacity: 0;
+  transform: translateX(-24px);
 }
+
+.screen.exit-right {
+  opacity: 0;
+  transform: translateX(24px);
+}
+
+
   
 </style>
 </head>
@@ -968,8 +974,8 @@ const prompts = [
   { title: "Things that ruin concentration instantly", low: "Distracting", high: "Impossible" },
   { title: "Things you shouldn't clap for", low: "Odd", high: "Unhinged" },
   { title: "Things that feel colder than expected", low: "Chilly", high: "Freezing" },
-  { title: "Things that feel louder than they are", low: "Noticeable", high: "Deafening" },
-  { title: "Things that shouldn't be sticky", low: "Annoying", high: "Horrifying" },
+  { title: "Spicy foods", low: "No heat", high: "Tongue-numbing" },
+  { title: "Meals to have at 8pm", low: "Normal", high: "Very Unusual" },
   { title: "Things that make people stare", low: "Curious", high: "Alarmed" },
   { title: "Things that feel too personal to ask", low: "Awkward", high: "Unacceptable" },
   { title: "Things that feel fake even when real", low: "Suspicious", high: "Impossible" },
@@ -977,20 +983,20 @@ const prompts = [
   { title: "Things that ruin a good mood", low: "Minor", high: "Day-ending" },
   { title: "Things that feel wrong at night", low: "Weird", high: "Terrifying" },
   { title: "Things that feel dramatic for no reason", low: "Extra", high: "Unhinged" },
-  { title: "Things that should never be whispered", low: "Strange", high: "Threatening" },
+  { title: "Phrases taken out of context", low: "Funny", high: "Irredeemable" },
   { title: "Things that feel longer than they are", low: "Dragging", high: "Endless" },
   { title: "Things that feel rude but aren't", low: "Blunt", high: "Savage" },
-  { title: "Things that instantly kill confidence", low: "Doubtful", high: "Crushing" },
+  { title: "Amusement park attractions", low: "Boring", high: "Adrenaline-inducing" },
   { title: "Things that feel illegal in public", low: "Embarrassing", high: "Unthinkable" },
   { title: "Things that feel suspiciously quiet", low: "Calm", high: "Ominous" },
   { title: "Things that feel too powerful", low: "Impressive", high: "Terrifying" },
 
   { title: "Things that feel unsafe emotionally", low: "Awkward", high: "Devastating" },
-  { title: "Things that shouldn't be competitive", low: "Odd", high: "Unhinged" },
+  { title: "Things to bring to a potluck", low: "Fav contributiuon", high: "Shameful" },
   { title: "Things that feel worse when watched", low: "Uncomfortable", high: "Impossible" },
   { title: "Things that feel fake-polite", low: "Forced", high: "Painful" },
-  { title: "Things that feel cursed", low: "Off-putting", high: "Actively haunted" },
-  { title: "Things that make silence worse", low: "Awkward", high: "Unbearable" },
+  { title: "Things to be popular for", low: "Proud", high: "Embarrassing" },
+  { title: "Boiled foods", low: "Yum!", high: "Why!?!" },
   { title: "Things that feel like a trap", low: "Suspicious", high: "Certain doom" },
   { title: "Things that feel oddly threatening", low: "Unsettling", high: "Terrifying" },
   { title: "Things that feel wrong immediately", low: "Off", high: "Alarming" },
@@ -1025,7 +1031,7 @@ const sounds = {
   wrong: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA")
 };
 
-  const screenStack = [];
+ 
 
 /* --- FLOW --- */
   function launchSecretSaboteur() {
@@ -1033,52 +1039,31 @@ const sounds = {
   show('intro');    // enters the game
 }
   function launchImposter() {
+  imposterPlayers = 3;
+  imposterCount = 1; // reset to safe default
+  imposterIndex = 0;
   show("imposter-setup");
+  updateImposterPlayerUI();
 }
 
-  function pushScreen(id) {
-  const current = screenStack[screenStack.length - 1];
-  const next = document.getElementById(id);
-  if (!next) return;
 
-  if (current) {
-    current.classList.remove("active");
-    current.classList.add("exit-left");
+  function changeImposterPlayers(delta) {
+  imposterPlayers = Math.max(3, Math.min(20, imposterPlayers + delta));
+  updateImposterPlayerUI();
+}
+
+function updateImposterPlayerUI() {
+  document.getElementById("imposterPlayerCount").textContent = imposterPlayers;
+
+  const max = calculateMaxImposters(imposterPlayers);
+
+  if (imposterCount > max) {
+    imposterCount = max;
+    document.getElementById("imposterCountDisplay").textContent = imposterCount;
   }
 
-  next.classList.add("active", "from-right");
-  screenStack.push(next);
-
-  requestAnimationFrame(() => {
-    next.classList.remove("from-right");
-  });
-}
-
-  function popScreen() {
-  if (screenStack.length <= 1) return;
-
-  const current = screenStack.pop();
-  const previous = screenStack[screenStack.length - 1];
-
-  current.classList.remove("active");
-  current.classList.add("exit-right");
-
-  previous.classList.add("active", "from-left");
-
-  requestAnimationFrame(() => {
-    previous.classList.remove("from-left");
-  });
-}
-
-function replaceWith(id) {
-  screenStack.length = 0;
-  document.querySelectorAll(".screen").forEach(s =>
-    s.classList.remove("active", "exit-left", "exit-right")
-  );
-
-  const next = document.getElementById(id);
-  next.classList.add("active");
-  screenStack.push(next);
+  document.getElementById("imposterLimitText").textContent =
+    `Max imposters: ${max}`;
 }
 
 function show(id, direction = "right") {
@@ -1179,7 +1164,10 @@ roles[guesserIndex] = 'guesser';
 // Assign Saboteurs
 let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
 
-const actualSaboteurCount = getActualSaboteurCount(saboteurCount);
+const actualSaboteurCount = Math.min(
+  getActualSaboteurCount(saboteurCount),
+  available.length
+);
 
 // assign saboteurs (RANDOM UP TO MAX)
 for (let i = 0; i < actualSaboteurCount; i++) {
@@ -1214,7 +1202,8 @@ if (role === 'saboteur') flip.classList.add('saboteur');
 }
 
 function revealCorrectness(teammatesWin) {
-  const msg = document.getElementById('resultMessage');
+  const msg = document.getElementById("resultMessage");
+if (!msg) return;
 
   if (teammatesWin) {
     sounds.correct.play();
@@ -1241,8 +1230,12 @@ function startDiscussion(){
   discussionStarterIndex =
     eligible[Math.floor(Math.random() * eligible.length)];
   
-  const scale = document.getElementById('scaleBar');
-scale.style.animation = 'none';
+  const scale = document.getElementById("scaleBar");
+if (scale) {
+  scale.style.animation = "none";
+  scale.offsetHeight;
+  scale.style.animation = "";
+}
 scale.offsetHeight; // reflow
 scale.style.animation = '';
   const p=prompts[Math.floor(Math.random()*prompts.length)];
@@ -1376,7 +1369,7 @@ if (saboteurIndices.length === 0) {
   correctSaboteur =
   guessedNobody
     ? saboteurIndices.length === 0
-    : saboteurIndices.every(i => guessedSaboteurs.includes(i));
+    : saboteurIndices.length === guessedSaboteurs.length && saboteurIndices.every(i => guessedSaboteurs.includes(i));
 
 }
 
@@ -1410,11 +1403,15 @@ const teammatesWin = correctNumber || correctSaboteur;
 
   
   function showSaboteurInfo() {
-  document.getElementById('sabPopup').classList.remove('hidden');
+  const el = document.getElementById("sabPopup");
+  if (!el) return;
+  el.classList.remove("hidden");
 }
 
 function closeSaboteurInfo() {
-  document.getElementById('sabPopup').classList.add('hidden');
+  const el = document.getElementById("sabPopup");
+  if (!el) return;
+  el.classList.add("hidden");
 }
 
   function launchConfetti() {
@@ -1441,13 +1438,18 @@ function closeSaboteurInfo() {
   startDiscussion();
 }
 
-  function showRules() {
-  document.getElementById('rulesPopup').classList.remove('hidden');
+ function showRules() {
+  const el = document.getElementById("rulesPopup");
+  if (!el) return;
+  el.classList.remove("hidden");
 }
 
 function closeRules() {
-  document.getElementById('rulesPopup').classList.add('hidden');
+  const el = document.getElementById("rulesPopup");
+  if (!el) return;
+  el.classList.add("hidden");
 }
+
 
   function getMaxSaboteurs(playerCount){
   if (playerCount >= 10) return 4;
@@ -1621,14 +1623,17 @@ if (likelihoodToggle) {
 /* === IMPOSTER GAME === */
 
 let imposterPlayers = 3;
-let imposterCount = 1;
 let imposterNames = [];
 let imposterRoles = [];
 let imposterIndex = 0;
-let secretWord = "";
+let imposterWord = "";
+let imposterCount = 1;   // PLAYER-CHOSEN
 
-const words = wordBank[selectedCategory];
-secretWord = words[Math.floor(Math.random() * words.length)];
+
+function calculateMaxImposters(playerCount) {
+  return Math.ceil(playerCount / 5);
+}
+
 
 const wordBank = {
   objects: [
@@ -1746,12 +1751,17 @@ const wordBank = {
 
 
 function changeImposterPlayers(delta) {
-  imposterPlayers = Math.min(20, Math.max(3, imposterPlayers + delta));
-  document.getElementById("imposterPlayerCount").textContent = imposterPlayers;
+  imposterPlayers = Math.max(3, Math.min(20, imposterPlayers + delta));
+
+  const maxImposters = calculateMaxImposters(imposterPlayers);
+  imposterCount = Math.min(imposterCount, maxImposters);
+
+  updateImposterPlayerUI();
+  updateImposterCountUI();
 }
 
+
 function startImposterNames() {
-  
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
@@ -1759,10 +1769,9 @@ function startImposterNames() {
     wrap.innerHTML += `<input value="Player ${i + 1}">`;
   }
 
-  imposterCount = 1;
-  updateImposterLimit();
   show("imposter-names");
 }
+
 
 function updateImposterLimit() {
   const max =
@@ -1774,15 +1783,27 @@ function updateImposterLimit() {
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
   document.getElementById("imposterLimitText").textContent =
     `Up to ${max} imposter${max > 1 ? "s" : ""} allowed`;
+  
+  const max = calculateMaxImposters(imposterPlayers);
+if (imposterCount > max) {
+  imposterCount = max;
+}
+document.getElementById("imposterCountDisplay").textContent = imposterCount;
+
 }
 
 function changeImposterCount(delta) {
-  const min = 1;
-  const max = getMaxImposters(playerCount);
+  const maxImposters = calculateMaxImposters(imposterPlayers);
+  imposterCount = Math.max(1, Math.min(maxImposters, imposterCount + delta));
+  updateImposterCountUI();
+}
 
-  imposterCount = Math.max(min, Math.min(max, imposterCount + delta));
+function updateImposterCountUI() {
+  const max = calculateMaxImposters(imposterPlayers);
 
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
+  document.getElementById("imposterLimitText").textContent =
+    `Max imposters for ${imposterPlayers} players: ${max}`;
 }
 
   function updateImposterButtons() {
@@ -1799,28 +1820,39 @@ function changeImposterCount(delta) {
 }
   
 function startImposterRoles() {
+  // 1️⃣ Collect names
   imposterNames = [...document.querySelectorAll("#imposterNameInputs input")]
     .map(i => i.value || "Player");
 
-  // Pick categories
-  const selectedCats = [...document.querySelectorAll(".category-btn.active")]
-  .map(b => b.dataset.cat);
+  const playerCount = imposterNames.length;
 
-  let pool = [];
-  selectedCats.forEach(cat => pool.push(...wordBank[cat]));
-  secretWord = pool[Math.floor(Math.random() * pool.length)];
+  // 2️⃣ Calculate maximum & final imposter count
+  const maxImposters = calculateMaxImposters(playerCount);
+  const finalImposterCount = Math.min(imposterCount, maxImposters);
 
-  // Assign roles
-  imposterRoles = Array(imposterPlayers).fill("civilian");
-  const shuffled = [...Array(imposterPlayers).keys()].sort(() => Math.random() - 0.5);
+  // 3️⃣ Pick the word
+  const words = wordBank[selectedCategory];
+  imposterWord = words[Math.floor(Math.random() * words.length)];
 
-  for (let i = 0; i < imposterCount; i++) {
-    imposterRoles[shuffled[i]] = "imposter";
+  // 4️⃣ Initialize roles
+  imposterRoles = Array(playerCount).fill("crew");
+
+  // 5️⃣ ASSIGN IMPOSTERS  ← 🔴 THIS IS WHERE IT GOES
+  let assigned = 0;
+  while (assigned < finalImposterCount) {
+    const idx = Math.floor(Math.random() * playerCount);
+    if (imposterRoles[idx] === "crew") {
+      imposterRoles[idx] = "imposter";
+      assigned++;
+    }
   }
 
+  // 6️⃣ Reset index & start reveal flow
   imposterIndex = 0;
-  showImposterRole();
+  updateImposterCard();
+  show("imposter-role");
 }
+
 
 function showImposterRole() {
   document.getElementById("imposterCurrentName").textContent =
@@ -1840,6 +1872,30 @@ function showImposterRole() {
 function toggleImposterFlip() {
   document.getElementById("imposterFlip").classList.toggle("revealed");
 }
+
+ function updateImposterCard() {
+  document.getElementById("imposterCurrentName").textContent =
+    imposterNames[imposterIndex];
+
+  const back = document.getElementById("imposterRoleBack");
+
+  if (imposterRoles[imposterIndex] === "imposter") {
+    back.innerHTML = `
+      <div class="imposter-card">
+        <h2>IMPOSTER</h2>
+        <p>Blend in. Avoid detection.</p>
+      </div>`;
+  } else {
+    back.innerHTML = `
+      <div class="imposter-card">
+        <div class="word-label">The word is</div>
+        <h2 class="secret-word">${imposterWord}</h2>
+      </div>`;
+  }
+
+  document.getElementById("imposterFlip").classList.remove("revealed");
+}
+
   
 function startImposterNames() {
   imposterNames = [];
@@ -1858,24 +1914,26 @@ function startImposterNames() {
 
 function nextImposterPlayer() {
   imposterIndex++;
-  if (imposterIndex < imposterPlayers) showImposterRole();
-  else {
-    const starter =
-  imposterNames[Math.floor(Math.random() * imposterNames.length)];
-
-document.getElementById("imposterDiscussionStarter").innerHTML =
-  `<strong>${starter}</strong> starts the discussion`;
-
+  if (imposterIndex < imposterNames.length) {
+    updateImposterCard();
+  } else {
     show("imposter-discussion");
   }
 }
 
 function revealImposter() {
-  document.getElementById("imposterWordReveal").textContent = secretWord;
+  document.getElementById("imposterWordReveal").textContent = imposterWord;
+
+  const imposters = imposterRoles
+    .map((r, i) => r === "imposter" ? imposterNames[i] : null)
+    .filter(Boolean);
+
   document.getElementById("imposterList").textContent =
-    imposterNames.filter((_, i) => imposterRoles[i] === "imposter").join(", ");
+    imposters.join(", ");
+
   show("imposter-results");
 }
+
   
 document.querySelectorAll(".category-btn").forEach(btn => {
   btn.addEventListener("click", () => {
