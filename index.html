@@ -550,22 +550,22 @@ input{
   border-radius: 12px;
 }
 
- .category-btn {
+.category-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
 
   padding: 12px;
-  min-height: 60px;
+  min-height: 64px;
 
   white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;   
+  word-break: normal;      /* NEVER break words */
 
-  line-height: 1.2;
-   word-break: break-word;
+  line-height: 1.25;
 }
+
 
 .category-btn.active {
   transform: scale(1.07);
@@ -627,6 +627,15 @@ input{
   animation: selectPop 0.25s ease;
 }
 
+ #categoryGrid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 600px) {
+  #categoryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
   
 </style>
 </head>
@@ -790,7 +799,7 @@ input{
   <button class="category-btn" data-cat="animals">Animals</button>
   <button class="category-btn" data-cat="colors">Colors</button>
   <button class="category-btn" data-cat="shapes">Shapes</button>
-  <button class="category-btn" data-cat="emotions">Emotions & Feelings</button>
+  <button class="category-btn" data-cat="emotions">Emotions<br>& Feelings</button>
   <button class="category-btn" data-cat="music">Music</button>
   <button class="category-btn" data-cat="brands">Brands</button>
   <button class="category-btn" data-cat="hobbies">Hobbies & Sports</button>
@@ -997,6 +1006,18 @@ let guessedSaboteurs = [];
   let submitWasDisabled = true;
   let showLikelihoodHint = false;
   let discussionStarterIndex = null;
+  let selectedCategory = "objects";
+
+document.querySelectorAll(".category-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document
+      .querySelectorAll(".category-btn")
+      .forEach(b => b.classList.remove("active"));
+
+    btn.classList.add("active");
+    selectedCategory = btn.dataset.cat;
+  });
+});
 
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
@@ -1606,6 +1627,9 @@ let imposterRoles = [];
 let imposterIndex = 0;
 let secretWord = "";
 
+const words = wordBank[selectedCategory];
+secretWord = words[Math.floor(Math.random() * words.length)];
+
 const wordBank = {
   objects: [
     "Chair","Table","Phone","Backpack","Mirror","Clock","Lamp","Notebook","Pen","Wallet",
@@ -1815,6 +1839,21 @@ function showImposterRole() {
 
 function toggleImposterFlip() {
   document.getElementById("imposterFlip").classList.toggle("revealed");
+}
+  
+function startImposterNames() {
+  imposterNames = [];
+  imposterRoles = [];
+  imposterIndex = 0;
+
+  const wrap = document.getElementById("imposterNameInputs");
+  wrap.innerHTML = "";
+
+  for (let i = 0; i < imposterPlayers; i++) {
+    wrap.innerHTML += `<input value="Player ${i + 1}">`;
+  }
+
+  show("imposter-names");
 }
 
 function nextImposterPlayer() {
