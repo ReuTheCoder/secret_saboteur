@@ -1463,50 +1463,64 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
-  // 1. Reset Game State
+  console.log("Starting Imposter Setup...");
+
+  // 1. Switch screen IMMEDIATELY so you see feedback
+  show("imposter-names");
+
+  // 2. Safely get the number of players
+  let count = parseInt(imposterPlayers);
+  if (isNaN(count) || count < 3) count = 3;
+
+  // 3. Reset Game State
   imposterNames = [];
   imposterRoles = [];
   imposterIndex = 0;
 
-  // 2. Generate Inputs safely
+  // 4. Generate Inputs
   const wrap = document.getElementById("imposterNameInputs");
   if (wrap) {
     let inputsHTML = "";
-    // Ensure imposterPlayers is a valid number, default to 3 if not
-    const count = parseInt(imposterPlayers) || 3; 
-    
     for (let i = 0; i < count; i++) {
       inputsHTML += `<input type="text" value="Player ${i + 1}" placeholder="Player ${i+1}">`;
     }
     wrap.innerHTML = inputsHTML;
-  } else {
-    console.error("Could not find element: imposterNameInputs");
   }
 
-  // 3. Switch Screen
-  show("imposter-names");
-  
-  // 4. Update the limits for the new player count
-  // We wrap this in a timeout to ensure the DOM is ready
-  setTimeout(() => {
-      if(typeof updateImposterLimit === "function") {
-          updateImposterLimit();
-      }
-  }, 10);
+  // 5. Update Limits (safely)
+  if (typeof updateImposterLimit === "function") {
+    updateImposterLimit();
+  } else {
+    // Fallback if function is missing
+    const max = Math.ceil(count / 5);
+    const display = document.getElementById("imposterCountDisplay");
+    if(display) display.textContent = "1";
+    imposterCount = 1;
+  }
 }
 
 function updateImposterLimit() {
-  const maxLimit =
-    imposterPlayers < 6 ? 1 :
-    imposterPlayers < 11 ? 2 :
-    imposterPlayers < 16 ? 3 : 4;
+  // Logic to determine max imposters based on player count
+  const count = parseInt(imposterPlayers) || 3;
+  
+  // 3-5 players = 1 imposter
+  // 6-10 players = 2 imposters
+  // 11-15 players = 3 imposters
+  // 16+ players = 4 imposters
+  const maxLimit = Math.ceil(count / 5);
 
-  imposterCount = Math.min(imposterCount, maxLimit);
-  document.getElementById("imposterCountDisplay").textContent = imposterCount;
-  document.getElementById("imposterLimitText").textContent =
-    `Up to ${maxLimit} imposter${maxLimit > 1 ? "s" : ""} allowed`;
+  // Ensure current imposters doesn't exceed max
+  if (imposterCount > maxLimit) imposterCount = maxLimit;
+  if (imposterCount < 1) imposterCount = 1;
+
+  // Update UI
+  const countDisplay = document.getElementById("imposterCountDisplay");
+  const textDisplay = document.getElementById("imposterLimitText");
+  
+  if (countDisplay) countDisplay.textContent = imposterCount;
+  if (textDisplay) textDisplay.textContent = `Max imposters: ${maxLimit}`;
 }
-
+  
 function changeImposterCount(delta) {
   const maxImposters = calculateMaxImposters(imposterPlayers);
   imposterCount = Math.max(1, Math.min(maxImposters, imposterCount + delta));
