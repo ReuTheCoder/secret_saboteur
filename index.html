@@ -1012,16 +1012,28 @@ let guessedSaboteurs = [];
   let submitWasDisabled = true;
   let showLikelihoodHint = false;
   let discussionStarterIndex = null;
-  let selectedCategory = "objects";
+  let selectedCategories = new Set(["objects"]); // default
+
 
 document.querySelectorAll(".category-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    document
-      .querySelectorAll(".category-btn")
-      .forEach(b => b.classList.remove("active"));
+    const cat = btn.dataset.cat;
 
-    btn.classList.add("active");
-    selectedCategory = btn.dataset.cat;
+    // Toggle visual state
+    btn.classList.toggle("active");
+
+    // Toggle data state
+    if (selectedCategories.has(cat)) {
+      selectedCategories.delete(cat);
+    } else {
+      selectedCategories.add(cat);
+    }
+
+    // Safety: never allow zero categories
+    if (selectedCategories.size === 0) {
+      selectedCategories.add(cat);
+      btn.classList.add("active");
+    }
   });
 });
 
@@ -1045,7 +1057,12 @@ const sounds = {
   show("imposter-setup");
   updateImposterPlayerUI();
 }
+function getRandomImposterWord() {
+  const pools = [...selectedCategories]
+    .flatMap(cat => wordBank[cat] || []);
 
+  return pools[Math.floor(Math.random() * pools.length)];
+}
 
   function changeImposterPlayers(delta) {
   imposterPlayers = Math.max(3, Math.min(20, imposterPlayers + delta));
@@ -1832,7 +1849,8 @@ function startImposterRoles() {
 
   // 3️⃣ Pick the word
   const words = wordBank[selectedCategory];
-  imposterWord = words[Math.floor(Math.random() * words.length)];
+  imposterWord = getRandomImposterWord();
+
 
   // 4️⃣ Initialize roles
   imposterRoles = Array(playerCount).fill("crew");
