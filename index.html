@@ -896,7 +896,6 @@ const prompts = [
   { title: "Food to eat at 7am", low: "Good", high: "Bad" },
   { title: "Places for summer vacation", low: "Worst", high: "Best" },
   { title: "Times to do homework", low: "Good", high: "Bad" },
-
   { title: "Excuses to leave a party early", low: "Believable", high: "Unbelievable" },
   { title: "Things you should never Google", low: "Harmless", high: "Traumatizing" },
   { title: "Things that ruin your day", low: "Minor", high: "Devastating" },
@@ -907,7 +906,6 @@ const prompts = [
   { title: "Clubs to join", low: "Boring", high: "Fun" },
   { title: "Times to laugh", low: "Appropriate", high: "Inappropriate" },
   { title: "Things to accidentally text your teacher", low: "Fine", high: "Horrifying" },
-
   { title: "Icebreakers", low: "Boring", high: "Painfully awkward" },
   { title: "Foods to bring to a potluck", low: "Welcomed", high: "Questioned" },
   { title: "Midnight snacks", low: "Normal", high: "Concerning" },
@@ -918,7 +916,6 @@ const prompts = [
   { title: "Sounds to fall asleep to", low: "Soothing", high: "Unbearable" },
   { title: "Clothes to sleep in", low: "Comfy", high: "A mistake" },
   { title: "Weather to walk in", low: "Pleasant", high: "Brutal" },
-
   { title: "Times to wake up", low: "Ideal", high: "Cruel" },
   { title: "Things to yell in a library", low: "Quiet", high: "Unacceptable" },
   { title: "Places to lose your phone", low: "Recoverable", high: "Hopeless" },
@@ -929,7 +926,6 @@ const prompts = [
   { title: "Social mistakes", low: "Forgivable", high: "Unforgettable" },
   { title: "Times to leave", low: "Polite", high: "Dramatic" },
   { title: "Things to do instead of studying", low: "Understandable", high: "Irresponsible" },
-  
   { title: "Things that make you instantly cringe", low: "Mild", high: "Physically painful" },
   { title: "Things to hear right before a test", low: "Comforting", high: "Terrifying" },
   { title: "Things to forget at a sleepover", low: "No big deal", high: "Friendship-ending" },
@@ -940,7 +936,6 @@ const prompts = [
   { title: "Things to say when you don't hear someone", low: "Polite", high: "Unhinged" },
   { title: "Things that ruin a vibe instantly", low: "Buzzkill", high: "Atmosphere destroyer" },
   { title: "Things that make a room go silent", low: "Unexpected", high: "Catastrophic" },
-
   { title: "Things to bring to a group project meeting", low: "Helpful", high: "Pointless" },
   { title: "Things that shouldn't be competitive", low: "Odd", high: "Unhinged" },
   { title: "Things that feel personal but aren't", low: "Slightly invasive", high: "Way too much" },
@@ -951,7 +946,6 @@ const prompts = [
   { title: "Things to overhear on public transit", low: "Boring", high: "Life-changing" },
   { title: "Things that shouldn't have lore", low: "Odd", high: "Deeply unsettling" },
   { title: "Things that make waiting worse", low: "Annoying", high: "Unbearable" },
-
   { title: "Things that feel like a jump scare", low: "Startling", high: "Heart attack" },
   { title: "Things that shouldn't be sticky", low: "Annoying", high: "Horrifying" },
   { title: "Things to say during a presentation", low: "Recoverable", high: "Career-ending" },
@@ -962,13 +956,11 @@ const prompts = [
   { title: "Things to hear from the next room", low: "Confusing", high: "Alarming" },
   { title: "Things that make silence worse", low: "Awkward", high: "Unbearable" },
   { title: "Things that ruin confidence instantly", low: "Doubt-inducing", high: "Soul-crushing" },
-
   { title: "Things to bring up at the wrong time", low: "Awkward", high: "Unforgivable" },
   { title: "Things that feel cursed", low: "Off-putting", high: "Actively haunted" },
   { title: "Things that shouldn't make noise", low: "Annoying", high: "Terrifying" },
   { title: "Things to forget you're holding", low: "Embarrassing", high: "Dangerous" },
   { title: "Things that make you question reality", low: "Confusing", high: "Existential crisis" },
-  
   { title: "Things that feel awkward way too fast", low: "Mild", high: "Unbearable" },
   { title: "Things that feel illegal but aren't", low: "Suspicious", high: "Heart-racing" },
   { title: "Things that ruin concentration instantly", low: "Distracting", high: "Impossible" },
@@ -979,7 +971,6 @@ const prompts = [
   { title: "Things that make people stare", low: "Curious", high: "Alarmed" },
   { title: "Things that feel too personal to ask", low: "Awkward", high: "Unacceptable" },
   { title: "Things that feel fake even when real", low: "Suspicious", high: "Impossible" },
-
   { title: "Things that ruin a good mood", low: "Minor", high: "Day-ending" },
   { title: "Things that feel wrong at night", low: "Weird", high: "Terrifying" },
   { title: "Things that feel dramatic for no reason", low: "Extra", high: "Unhinged" },
@@ -990,7 +981,6 @@ const prompts = [
   { title: "Things that feel illegal in public", low: "Embarrassing", high: "Unthinkable" },
   { title: "Things that feel suspiciously quiet", low: "Calm", high: "Ominous" },
   { title: "Things that feel too powerful", low: "Impressive", high: "Terrifying" },
-
   { title: "Things that feel unsafe emotionally", low: "Awkward", high: "Devastating" },
   { title: "Things to bring to a potluck", low: "Fav contributiuon", high: "Shameful" },
   { title: "Things that feel worse when watched", low: "Uncomfortable", high: "Impossible" },
@@ -1005,84 +995,23 @@ const prompts = [
 
 let players=[],roles=[],count=0,idx=0,number=0,guess=0,round=1;
 
-  let guessedNobody = false;
-  let saboteurCount = 1;
+let guessedNobody = false;
+let saboteurCount = 1;
 let guessedNumber = null;
 let guessedSaboteurs = [];
-  let submitWasDisabled = true;
-  let showLikelihoodHint = false;
-  let discussionStarterIndex = null;
-  let selectedCategories = new Set(["objects"]); // default
+let submitWasDisabled = true;
+let showLikelihoodHint = false;
+let discussionStarterIndex = null;
+let selectedCategories = new Set(["objects"]); // default
 
-
-document.querySelectorAll(".category-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const cat = btn.dataset.cat;
-
-    // Toggle visual state
-    btn.classList.toggle("active");
-
-    // Toggle data state
-    if (selectedCategories.has(cat)) {
-      selectedCategories.delete(cat);
-    } else {
-      selectedCategories.add(cat);
-    }
-
-    // Safety: never allow zero categories
-    if (selectedCategories.size === 0) {
-      selectedCategories.add(cat);
-      btn.classList.add("active");
-    }
-  });
-});
-
+/* --- AUDIO --- */
 const sounds = {
   flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
   correct: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
   wrong: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA")
 };
 
- 
-
-/* --- FLOW --- */
-  function launchSecretSaboteur() {
-  resetGame();      // ensures clean state
-  show('intro');    // enters the game
-}
-  function launchImposter() {
-  imposterPlayers = 3;
-  imposterCount = 1; // reset to safe default
-  imposterIndex = 0;
-  show("imposter-setup");
-  updateImposterPlayerUI();
-}
-function getRandomImposterWord() {
-  const pools = [...selectedCategories]
-    .flatMap(cat => wordBank[cat] || []);
-
-  return pools[Math.floor(Math.random() * pools.length)];
-}
-
-  function changeImposterPlayers(delta) {
-  imposterPlayers = Math.max(3, Math.min(20, imposterPlayers + delta));
-  updateImposterPlayerUI();
-}
-
-function updateImposterPlayerUI() {
-  document.getElementById("imposterPlayerCount").textContent = imposterPlayers;
-
-  const max = calculateMaxImposters(imposterPlayers);
-
-  if (imposterCount > max) {
-    imposterCount = max;
-    document.getElementById("imposterCountDisplay").textContent = imposterCount;
-  }
-
-  document.getElementById("imposterLimitText").textContent =
-    `Max imposters: ${max}`;
-}
-
+/* --- FLOW NAVIGATION --- */
 function show(id, direction = "right") {
   document.querySelectorAll(".screen").forEach(s => {
     s.classList.remove("active", "exit", "from-left", "from-right");
@@ -1099,12 +1028,39 @@ function show(id, direction = "right") {
   });
 }
 
+function launchSecretSaboteur() {
+  resetGame();      
+  show('intro');    
+}
+
+function launchImposter() {
+  imposterPlayers = 3;
+  imposterCount = 1; 
+  imposterIndex = 0;
+  show("imposter-setup");
+  updateImposterPlayerUI();
+}
+
+function resetGame(){
+  round = 1;
+  players = [];
+  roles = [];
+  idx = 0;
+  guessedNumber = null;
+  guessedSaboteurs = [];
+  guessedNobody = false;
+  show("home");
+}
+
+/* --- SECRET SABOTEUR LOGIC --- */
+
+// Initial Player Selection
 const grid=document.getElementById('playerGrid');
 for(let i = 3; i <= 10; i++) {
   const btn = document.createElement("button");
-btn.textContent = i;
-btn.onclick = () => selectPlayers(i);
-grid.appendChild(btn);
+  btn.textContent = i;
+  btn.onclick = () => selectPlayers(i);
+  grid.appendChild(btn);
 }
 
 function selectPlayers(n){
@@ -1119,81 +1075,81 @@ function selectPlayers(n){
   }
 
   const sabBox = document.getElementById('saboteurSelect');
-sabBox.classList.remove('hidden');
+  sabBox.classList.remove('hidden');
 
-setupSaboteurCountSelect();
-saboteurCount = 1; // default
+  setupSaboteurCountSelect();
+  saboteurCount = 1; // default
 }
 
-  function setSaboteurs(n) {
-  saboteurCount = n;
+function setupSaboteurCountSelect(){
+  const maxSab = getMaxSaboteurs(count);
+  const container = document.getElementById("saboteurCountGrid");
+  container.innerHTML = "";
+
+  for (let i = 1; i <= maxSab; i++){
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.onclick = () => {
+      saboteurCount = i;
+      document
+        .querySelectorAll("#saboteurCountGrid button")
+        .forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+
+    if (i === 1) btn.classList.add("selected"); 
+    container.appendChild(btn);
+  }
 }
 
+function getMaxSaboteurs(playerCount){
+  if (playerCount >= 10) return 4;
+  if (playerCount >= 8) return 3;
+  if (playerCount >= 6) return 2;
+  return 1;
+}
+
+function confirmSaboteurAndStart(){
+  if (!saboteurCount) {
+    alert("Please select the number of Saboteurs.");
+    return;
+  }
+  startRound();
+}
+
+// Role Distribution Logic
 function getActualSaboteurCount(maxSaboteurs) {
   const roll = Math.random() * 100;
-
   const tables = {
-    1: [
-      { count: 0, chance: 20 },
-      { count: 1, chance: 80 }
-    ],
-    2: [
-      { count: 0, chance: 10 },
-      { count: 1, chance: 30 },
-      { count: 2, chance: 60 }
-    ],
-    3: [
-      { count: 0, chance: 5 },
-      { count: 1, chance: 15 },
-      { count: 2, chance: 20 },
-      { count: 3, chance: 60 }
-    ],
-    4: [
-      { count: 0, chance: 1 },
-      { count: 1, chance: 15 },
-      { count: 2, chance: 16 },
-      { count: 3, chance: 18 },
-      { count: 4, chance: 50 } // remainder
-    ]
+    1: [{ count: 0, chance: 20 }, { count: 1, chance: 80 }],
+    2: [{ count: 0, chance: 10 }, { count: 1, chance: 30 }, { count: 2, chance: 60 }],
+    3: [{ count: 0, chance: 5 }, { count: 1, chance: 15 }, { count: 2, chance: 20 }, { count: 3, chance: 60 }],
+    4: [{ count: 0, chance: 1 }, { count: 1, chance: 15 }, { count: 2, chance: 16 }, { count: 3, chance: 18 }, { count: 4, chance: 50 }]
   };
 
   let cumulative = 0;
   for (const entry of tables[maxSaboteurs]) {
     cumulative += entry.chance;
-    if (roll <= cumulative) {
-      return entry.count;
-    }
+    if (roll <= cumulative) return entry.count;
   }
-
-  return maxSaboteurs; // safety fallback
+  return maxSaboteurs; 
 }
 
 function startRound(){
   players=[...document.querySelectorAll('#nameInputs input')].map(i=>i.value||'Player');
   roles = Array(count).fill('teammate');
 
-// Assign Guesser
-const guesserIndex = Math.floor(Math.random() * count);
-roles[guesserIndex] = 'guesser';
+  const guesserIndex = Math.floor(Math.random() * count);
+  roles[guesserIndex] = 'guesser';
 
+  let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
+  const actualSaboteurCount = Math.min(getActualSaboteurCount(saboteurCount), available.length);
 
-
-// Assign Saboteurs
-let available = [...Array(count).keys()].filter(i => i !== guesserIndex);
-
-const actualSaboteurCount = Math.min(
-  getActualSaboteurCount(saboteurCount),
-  available.length
-);
-
-// assign saboteurs (RANDOM UP TO MAX)
-for (let i = 0; i < actualSaboteurCount; i++) {
-  const pick = Math.floor(Math.random() * available.length);
-  roles[available[pick]] = "saboteur";
-  available.splice(pick, 1);
-}
-
-
+  for (let i = 0; i < actualSaboteurCount; i++) {
+    const pick = Math.floor(Math.random() * available.length);
+    roles[available[pick]] = "saboteur";
+    available.splice(pick, 1);
+  }
   
   number=Math.floor(Math.random()*10)+1;
   idx=0;
@@ -1205,8 +1161,9 @@ function showRole(){
   const back=document.getElementById('roleBack');
   const role=roles[idx];
   const flip = back.parentElement;
-flip.classList.remove('saboteur');
-if (role === 'saboteur') flip.classList.add('saboteur');
+  
+  flip.classList.remove('saboteur');
+  if (role === 'saboteur') flip.classList.add('saboteur');
   
   back.innerHTML=`
     <div class="eye">👁️</div>
@@ -1218,43 +1175,32 @@ if (role === 'saboteur') flip.classList.add('saboteur');
   show('role');
 }
 
-function revealCorrectness(teammatesWin) {
-  const msg = document.getElementById("resultMessage");
-if (!msg) return;
-
-  if (teammatesWin) {
-    sounds.correct.play();
-    msg.textContent = "✅ Teammates Win!";
-    msg.className = "correct";
-  } else {
-    sounds.wrong.play();
-    msg.textContent = "❌ Saboteurs Win!";
-    msg.className = "incorrect";
-  }
-}
-
 function nextPlayer(){
   idx++;
   if(idx<count) showRole();
   else startDiscussion();
 }
 
+function toggleFlip() {
+  sounds.flip.play();
+  document.getElementById('flipCard').classList.toggle('revealed');
+}
+
+// Discussion & Game Loop
 function startDiscussion(){
    const eligible = roles
     .map((r, i) => r !== "guesser" ? i : null)
     .filter(i => i !== null);
 
-  discussionStarterIndex =
-    eligible[Math.floor(Math.random() * eligible.length)];
+  discussionStarterIndex = eligible[Math.floor(Math.random() * eligible.length)];
   
   const scale = document.getElementById("scaleBar");
-if (scale) {
-  scale.style.animation = "none";
-  scale.offsetHeight;
-  scale.style.animation = "";
-}
-scale.offsetHeight; // reflow
-scale.style.animation = '';
+  if (scale) {
+    scale.style.animation = "none";
+    scale.offsetHeight;
+    scale.style.animation = "";
+  }
+  
   const p=prompts[Math.floor(Math.random()*prompts.length)];
   window.curPrompt=p;
   document.getElementById('promptText').textContent=p.title;
@@ -1262,17 +1208,17 @@ scale.style.animation = '';
   document.getElementById('highLabel').textContent=p.high;
   document.getElementById('scaleBar').innerHTML='';
   for (let i = 1; i <= 10; i++) {
-  document.getElementById('scaleBar').innerHTML += `<div>${i}</div>`;
-}
+    document.getElementById('scaleBar').innerHTML += `<div>${i}</div>`;
+  }
+  
   const hintEl = document.getElementById("likelihoodHint");
-
-if (showLikelihoodHint) {
-  const likelihood = getSaboteurLikelihood();
-  hintEl.textContent = `Saboteur likelihood: ${likelihood}`;
-  hintEl.style.display = "block";
-} else {
-  hintEl.style.display = "none";
-}
+  if (showLikelihoodHint) {
+    hintEl.textContent = `Saboteur likelihood: ${getSaboteurLikelihood()}`;
+    hintEl.style.display = "block";
+  } else {
+    hintEl.style.display = "none";
+  }
+  
   document.getElementById("saboteurDiscussionStarter").innerHTML =
   `<strong>${players[discussionStarterIndex]}</strong> starts the discussion`;
 
@@ -1280,6 +1226,27 @@ if (showLikelihoodHint) {
   pulseScale();
 }
 
+function getSaboteurLikelihood() {
+  if (saboteurCount <= 1) return "Low";
+  if (saboteurCount === 2) return "High";
+  return "Very High";
+}
+
+function rerollPrompt() {
+  startDiscussion();
+}
+
+function pulseScale() {
+  const items = document.querySelectorAll('#scaleBar div');
+  items.forEach((el, i) => {
+    setTimeout(() => {
+      el.classList.add('pulse');
+      setTimeout(() => el.classList.remove('pulse'), 400);
+    }, i * 120);
+  });
+}
+
+// Guessing Logic
 function toGuess() {
   document.getElementById('guessPrompt').textContent = curPrompt.title;
 
@@ -1297,52 +1264,54 @@ function toGuess() {
 function makeGuess(n){
   guessedNumber = n;
 
-  document
-    .querySelectorAll("#guess .player-btn")
-    .forEach(b => b.classList.remove("selected"));
-
+  document.querySelectorAll("#guess .player-btn").forEach(b => b.classList.remove("selected"));
   const btns = document.querySelectorAll("#guess .player-btn");
   btns[n - 1]?.classList.add("selected");
 
   updateSubmitButton();
 }
 
-  function selectSaboteur(index, btn) {
+function setupSaboteurChoices() {
+  const wrap = document.getElementById("saboteurChoices");
+  wrap.innerHTML = "";
 
-  // "Nobody" option
+  players.forEach((name, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+    btn.onclick = () => selectSaboteur(i, btn);
+    wrap.appendChild(btn);
+  });
+
+  const nobodyBtn = document.createElement("button");
+  nobodyBtn.textContent = "Nobody";
+  nobodyBtn.onclick = () => selectSaboteur(null, nobodyBtn);
+  wrap.appendChild(nobodyBtn);
+}
+
+function selectSaboteur(index, btn) {
  if (index === null) {
   guessedSaboteurs = [];
   guessedNobody = true;
 
-  document
-    .querySelectorAll("#saboteurChoices button")
-    .forEach(b => b.classList.remove("selected"));
-
+  document.querySelectorAll("#saboteurChoices button").forEach(b => b.classList.remove("selected"));
   btn.classList.add("selected");
   updateSubmitButton();
   return;
 }
 
-  // Remove "Nobody" selection if choosing a player
- document
-  .querySelectorAll("#saboteurChoices button")
-  .forEach(b => {
+ document.querySelectorAll("#saboteurChoices button").forEach(b => {
     if (b.textContent === "Nobody") b.classList.remove("selected");
   });
 
-guessedNobody = false;
-
+  guessedNobody = false;
   const existingIndex = guessedSaboteurs.indexOf(index);
 
-  // Unselect if already selected
   if (existingIndex !== -1) {
     guessedSaboteurs.splice(existingIndex, 1);
     btn.classList.remove("selected");
   } 
-  // Enforce limit
   else {
     if (guessedSaboteurs.length >= saboteurCount) {
-      // Small UX feedback
       btn.classList.add("shake");
       setTimeout(() => btn.classList.remove("shake"), 300);
       return;
@@ -1356,506 +1325,191 @@ guessedNobody = false;
 
 function updateSubmitButton() {
   const btn = document.getElementById("submitGuessBtn");
-
   const numberReady = guessedNumber !== null;
-
-  const saboteurReady =
-    guessedNobody ||
-    guessedSaboteurs.length > 0 &&
-    guessedSaboteurs.length <= saboteurCount;
+  const saboteurReady = guessedNobody || (guessedSaboteurs.length > 0 && guessedSaboteurs.length <= saboteurCount);
 
   btn.disabled = !(numberReady && saboteurReady);
-
   if (!btn.disabled) triggerSubmitUnlock(btn);
 }
 
+function triggerSubmitUnlock(btn) {
+  if (submitWasDisabled) {
+    btn.classList.remove("unlock-animate");
+    void btn.offsetWidth; 
+    btn.classList.add("unlock-animate");
+  }
+  submitWasDisabled = false;
+}
 
-  function submitGuess() {
+function submitGuess() {
   const correctNumber = guessedNumber === number;
-
-  const saboteurIndices = roles
-    .map((r, i) => r === "saboteur" ? i : null)
-    .filter(i => i !== null);
-
+  const saboteurIndices = roles.map((r, i) => r === "saboteur" ? i : null).filter(i => i !== null);
   let correctSaboteur;
 
-if (saboteurIndices.length === 0) {
-  correctSaboteur = guessedNobody;
-} else {
+  if (saboteurIndices.length === 0) {
+    correctSaboteur = guessedNobody;
+  } else {
+    correctSaboteur = guessedNobody
+      ? saboteurIndices.length === 0
+      : saboteurIndices.length === guessedSaboteurs.length && saboteurIndices.every(i => guessedSaboteurs.includes(i));
+  }
 
-  correctSaboteur =
-  guessedNobody
-    ? saboteurIndices.length === 0
-    : saboteurIndices.length === guessedSaboteurs.length && saboteurIndices.every(i => guessedSaboteurs.includes(i));
-
-}
-
-
-const teammatesWin = correctNumber || correctSaboteur;
-    if (teammatesWin) {
-  launchConfetti();
-}
+  const teammatesWin = correctNumber || correctSaboteur;
+  if (teammatesWin) {
+    launchConfetti();
+  }
   document.getElementById("realNum").textContent = number;
   document.getElementById("guessNum").textContent = guessedNumber;
 
   document.getElementById("sabName").textContent =
-    saboteurIndices.length
-      ? saboteurIndices.map(i => players[i]).join(", ")
-      : "Nobody";
+    saboteurIndices.length ? saboteurIndices.map(i => players[i]).join(", ") : "Nobody";
 
   document.getElementById("resultText").textContent =
-     
-    correctNumber && correctSaboteur
-      ? "Perfect! Number AND Saboteur guessed!"
-      : teammatesWin
-        ? "Teammates win!"
-        : "Saboteurs win!";
+    correctNumber && correctSaboteur ? "Perfect! Number AND Saboteur guessed!"
+      : teammatesWin ? "Teammates win!" : "Saboteurs win!";
         
   revealCorrectness(teammatesWin);
-
   show("results");
-
-  
 }
 
-  
-  function showSaboteurInfo() {
-  const el = document.getElementById("sabPopup");
-  if (!el) return;
-  el.classList.remove("hidden");
-}
+function revealCorrectness(teammatesWin) {
+  const msg = document.getElementById("resultMessage");
+  if (!msg) return;
 
-function closeSaboteurInfo() {
-  const el = document.getElementById("sabPopup");
-  if (!el) return;
-  el.classList.add("hidden");
-}
-
-  function launchConfetti() {
-  const wrap = document.createElement('div');
-  wrap.className = 'confetti';
-
-  for (let i = 0; i < 80; i++) {
-    const c = document.createElement('span');
-    c.style.left = Math.random() * 100 + 'vw';
-    c.style.animationDelay = Math.random() * 0.4 + 's';
-    wrap.appendChild(c);
+  if (teammatesWin) {
+    sounds.correct.play();
+    msg.textContent = "✅ Teammates Win!";
+    msg.className = "correct";
+  } else {
+    sounds.wrong.play();
+    msg.textContent = "❌ Saboteurs Win!";
+    msg.className = "incorrect";
   }
-
-  document.body.appendChild(wrap);
-  setTimeout(() => wrap.remove(), 2000);
-}
-
-  function toggleFlip() {
-  sounds.flip.play();
-  document.getElementById('flipCard').classList.toggle('revealed');
-}
-
-  function rerollPrompt() {
-  startDiscussion();
-}
-
- function showRules() {
-  const el = document.getElementById("rulesPopup");
-  if (!el) return;
-  el.classList.remove("hidden");
-}
-
-function closeRules() {
-  const el = document.getElementById("rulesPopup");
-  if (!el) return;
-  el.classList.add("hidden");
-}
-
-
-  function getMaxSaboteurs(playerCount){
-  if (playerCount >= 10) return 4;
-  if (playerCount >= 8) return 3;
-  if (playerCount >= 6) return 2;
-  return 1;
-}
-
-  function confirmSaboteurAndStart(){
-  if (!saboteurCount) {
-    alert("Please select the number of Saboteurs.");
-    return;
-  }
-  startRound();
-}
-
-  function getSaboteurLikelihood() {
-  if (saboteurCount <= 1) return "Low";
-  if (saboteurCount === 2) return "High";
-  return "Very High";
-}
-
-  
-  function setupSaboteurCountSelect(){
-  const maxSab = getMaxSaboteurs(count);
-  const container = document.getElementById("saboteurCountGrid");
-  container.innerHTML = "";
-
-  for (let i = 1; i <= maxSab; i++){
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    btn.onclick = () => {
-      saboteurCount = i;
-      document
-        .querySelectorAll("#saboteurCountGrid button")
-        .forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-    };
-
-    if (i === 1) btn.classList.add("selected"); // default highlight
-    container.appendChild(btn);
-  }
-}
-
-
-  function pulseScale() {
-  const items = document.querySelectorAll('#scaleBar div');
-  items.forEach((el, i) => {
-    setTimeout(() => {
-      el.classList.add('pulse');
-      setTimeout(() => el.classList.remove('pulse'), 400);
-    }, i * 120);
-  });
-}
-  
-function setupSaboteurChoices() {
-  const wrap = document.getElementById("saboteurChoices");
-  wrap.innerHTML = "";
-
-  players.forEach((name, i) => {
-    const btn = document.createElement("button");
-    btn.textContent = name;
-    btn.onclick = () => selectSaboteur(i, btn);
-    wrap.appendChild(btn);
-  });
-
-  // Nobody option
-  const nobodyBtn = document.createElement("button");
-  nobodyBtn.textContent = "Nobody";
-  nobodyBtn.onclick = () => selectSaboteur(null, nobodyBtn);
-  wrap.appendChild(nobodyBtn);
 }
 
 function playAgain(){
   startRound();
 }
 
-
-
-function triggerSubmitUnlock(btn) {
-  if (submitWasDisabled) {
-    btn.classList.remove("unlock-animate");
-    void btn.offsetWidth; // reset animation
-    btn.classList.add("unlock-animate");
-  }
-  submitWasDisabled = false;
-}
-  
-
-  function handleKey(e) {
-  const key = e.key;
-
-  // ----- POPUPS -----
-  if (key === "Escape") {
-    closeRules();
-    closeSaboteurInfo();
-    return;
-  }
-
-  // ----- ROLE SCREEN -----
-  if (isActive("role")) {
-    if (key === " " || key === "Enter") {
-      e.preventDefault();
-      toggleFlip();
-    }
-  }
-
-  // ----- DISCUSSION SCALE (1–10) -----
-  if (isActive("discussion")) {
-    if (key >= "1" && key <= "9") pulseNumber(+key);
-    if (key === "0") pulseNumber(10);
-    if (key === "Enter") toGuess();
-  }
-
-  // ----- GUESS SCREEN -----
-  if (isActive("guess")) {
-    if (key >= "1" && key <= "9") makeGuess(+key);
-    if (key === "0") makeGuess(10);
-  }
-
-  // ----- RESULTS -----
-  if (isActive("results") && key === "Enter") {
-    playAgain();
-  }
-}
-
-  function isActive(id) {
-  return document.getElementById(id).classList.contains("active");
-}
-
-  function pulseNumber(n) {
-  const items = document.querySelectorAll("#scaleBar div");
-  const el = items[n - 1];
-  if (!el) return;
-
-  el.classList.remove("pulse");
-  el.offsetHeight; // reset animation
-  el.classList.add("pulse");
-}
-  function unlockAudio() {
-  Object.values(sounds).forEach(s => {
-    s.play().catch(()=>{});
-    s.pause();
-    s.currentTime = 0;
-  });
-  document.removeEventListener("click", unlockAudio);
-}
-
-document.addEventListener("click", unlockAudio);
-  
-function resetGame(){
-  round = 1;
-  players = [];
-  roles = [];
-  idx = 0;
-  guessedNumber = null;
-  guessedSaboteurs = [];
-  guessedNobody = false;
-  show("home");
-}
-
-
-  document.addEventListener("keydown", handleKey);
-
-  const likelihoodToggle = document.getElementById("likelihoodToggle");
-if (likelihoodToggle) {
-  likelihoodToggle.addEventListener("change", e => {
-    showLikelihoodHint = e.target.checked;
-  });
-}
-/* === IMPOSTER GAME === */
+/* === IMPOSTER GAME LOGIC === */
 
 let imposterPlayers = 3;
 let imposterNames = [];
 let imposterRoles = [];
 let imposterIndex = 0;
 let imposterWord = "";
-let imposterCount = 1;   // PLAYER-CHOSEN
+let imposterCount = 1;
 
+// Word Banks
+const wordBank = {
+  objects: ["Chair","Table","Phone","Backpack","Mirror","Clock","Lamp","Notebook","Pen","Wallet","Keys","Bottle"],
+  food: ["Pizza","Burger","Pasta","Rice","Soup","Sandwich","Salad","Tacos","Fries","Noodles","Ice Cream","Cake"],
+  animals: ["Dog","Cat","Horse","Cow","Pig","Sheep","Goat","Chicken","Duck","Goose","Lion","Tiger"],
+  colors: ["Red","Blue","Green","Yellow","Orange","Purple","Pink","Brown","Black","White","Gray","Beige"],
+  shapes: ["Circle","Square","Triangle","Rectangle","Oval","Diamond","Star","Heart","Pentagon"],
+  emotions: ["Happy","Sad","Angry","Excited","Nervous","Calm","Relaxed","Stressed","Anxious","Confident"],
+  music: ["Song","Album","Playlist","Concert","Band","Singer","Guitar","Piano","Drums","Violin"],
+  brands: ["Apple","Google","Samsung","Nike","Adidas","Puma","Coca-Cola","Pepsi","McDonald's"],
+  hobbies: ["Gaming","Drawing","Painting","Reading","Writing","Cooking","Baking","Gardening"],
+  movies: ["Inception","Titanic","Avatar","Frozen","Toy Story","The Matrix","Jurassic Park","Star Wars"],
+  jobs: ["Doctor","Nurse","Teacher","Professor","Student","Engineer","Programmer","Developer"],
+  nature: ["Rain","Snow","Hail","Sleet","Wind","Breeze","Storm","Thunder","Lightning","Fog"],
+  science: ["Robot","AI","Computer","Internet","Algorithm","Code","Program","Software","Hardware"],
+  transport: ["Car","Truck","Van","Bus","Taxi","Uber","Train","Subway","Metro","Tram"]
+};
+
+// Category Selection
+document.querySelectorAll(".category-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const cat = btn.dataset.cat;
+    btn.classList.toggle("active");
+    if (selectedCategories.has(cat)) {
+      selectedCategories.delete(cat);
+    } else {
+      selectedCategories.add(cat);
+    }
+    if (selectedCategories.size === 0) {
+      selectedCategories.add(cat);
+      btn.classList.add("active");
+    }
+  });
+});
 
 function calculateMaxImposters(playerCount) {
   return Math.ceil(playerCount / 5);
 }
 
-
-const wordBank = {
-  objects: [
-    "Chair","Table","Phone","Backpack","Mirror","Clock","Lamp","Notebook","Pen","Wallet",
-    "Keys","Bottle","Glasses","Remote","Couch","Pillow","Blanket","Fan","Headphones","Watch",
-    "Scissors","Towel","Mug","Plate","Fork","Spoon","Knife","Bag","Shoes","Hat",
-    "Jacket","Umbrella","Charger","Cable","Keyboard","Mouse","Screen","Book","Box","Shelf",
-    "Door","Window","Frame","Candle","Coin","Brush","Comb","Basket","Bin","Folder"
-  ],
-
-  food: [
-    "Pizza","Burger","Pasta","Rice","Soup","Sandwich","Salad","Tacos","Fries","Noodles",
-    "Ice Cream","Cake","Cookies","Chocolate","Donut","Pancakes","Waffles","Cereal","Yogurt","Cheese",
-    "Apple","Banana","Orange","Strawberry","Grapes","Chicken","Steak","Fish","Eggs","Bacon",
-    "Sausage","Bread","Butter","Jam","Honey","Milk","Juice","Coffee","Tea","Smoothie",
-    "Chips","Popcorn","Pretzels","Sushi","Ramen","Curry","Dumplings","Pie","Brownies","Muffins"
-  ],
-
-  animals: [
-    "Dog","Cat","Horse","Cow","Pig","Sheep","Goat","Chicken","Duck","Goose",
-    "Lion","Tiger","Elephant","Giraffe","Zebra","Bear","Wolf","Fox","Deer","Moose",
-    "Monkey","Gorilla","Chimpanzee","Panda","Kangaroo","Koala","Sloth","Rabbit","Squirrel","Mouse",
-    "Rat","Hamster","Hedgehog","Bat","Owl","Eagle","Hawk","Parrot","Penguin","Flamingo",
-    "Dolphin","Whale","Shark","Octopus","Crab","Lobster","Frog","Toad","Snake","Lizard"
-  ],
-
-  colors: [
-    "Red","Blue","Green","Yellow","Orange","Purple","Pink","Brown","Black","White",
-    "Gray","Beige","Tan","Teal","Turquoise","Cyan","Magenta","Maroon","Navy","Olive",
-    "Mint","Lavender","Peach","Coral","Gold","Silver","Bronze","Indigo","Violet","Plum",
-    "Crimson","Scarlet","Amber","Aqua","Ivory","Charcoal","Slate","Sand","Sky Blue","Forest Green",
-    "Rose","Lilac","Mustard","Copper","Rust","Emerald","Sapphire","Ruby","Pearl","Chocolate"
-  ],
-
-  shapes: [
-    "Circle","Square","Triangle","Rectangle","Oval","Diamond","Star","Heart","Pentagon","Hexagon",
-    "Octagon","Cube","Sphere","Cylinder","Cone","Pyramid","Prism","Rhombus","Trapezoid","Parallelogram",
-    "Arrow","Cross","Spiral","Wave","Crescent","Ring","Donut","Bolt","Cloud","Teardrop",
-    "Shield","Badge","Chevron","Zigzag","Flower","Snowflake","Gear","Plus","Minus","Infinity",
-    "Keyhole","Explosion","Burst","Frame","Outline","Blob","Spike","Grid","Maze","Path"
-  ],
-
-  emotions: [
-    "Happy","Sad","Angry","Excited","Nervous","Calm","Relaxed","Stressed","Anxious","Confident",
-    "Proud","Embarrassed","Shy","Lonely","Loved","Jealous","Hopeful","Bored","Curious","Confused",
-    "Surprised","Shocked","Scared","Brave","Fearful","Content","Peaceful","Overwhelmed","Frustrated","Motivated",
-    "Inspired","Disappointed","Grateful","Guilty","Ashamed","Joyful","Cheerful","Moody","Tired","Energetic",
-    "Playful","Serious","Determined","Uncertain","Optimistic","Pessimistic","Satisfied","Restless","Awkward","Amused"
-  ],
-
-  music: [
-    "Song","Album","Playlist","Concert","Band","Singer","Guitar","Piano","Drums","Violin",
-    "Bass","Microphone","Speaker","Headphones","Radio","DJ","Beat","Melody","Harmony","Rhythm",
-    "Pop","Rock","Hip Hop","Rap","Jazz","Blues","Classical","Country","Electronic","EDM",
-    "Indie","Folk","Metal","Punk","Reggae","R&B","Soul","Opera","Karaoke","Remix",
-    "Chorus","Verse","Hook","Bridge","Tempo","Volume","Lyrics","Tune","Track","Jam"
-  ],
-
-  brands: [
-    "Apple","Google","Samsung","Nike","Adidas","Puma","Coca-Cola","Pepsi","McDonald's","Burger King",
-    "Starbucks","Amazon","Netflix","Disney","YouTube","TikTok","Instagram","Snapchat","Xbox","PlayStation",
-    "Nintendo","Sony","LG","Microsoft","Intel","AMD","Tesla","Ford","Toyota","Honda",
-    "IKEA","Walmart","Target","Costco","eBay","PayPal","Visa","Mastercard","Spotify","Uber",
-    "Airbnb","Zoom","Slack","Discord","Reddit","Twitter","LinkedIn","Pinterest","Dropbox","Canva"
-  ],
-
-  hobbies: [
-    "Gaming","Drawing","Painting","Reading","Writing","Cooking","Baking","Gardening","Knitting","Sewing",
-    "Photography","Filmmaking","Dancing","Singing","Acting","Running","Jogging","Hiking","Camping","Fishing",
-    "Swimming","Surfing","Skateboarding","Cycling","Yoga","Meditation","Weightlifting","Climbing","Martial Arts","Boxing",
-    "Soccer","Basketball","Baseball","Football","Hockey","Tennis","Badminton","Volleyball","Bowling","Golf",
-    "Chess","Board Games","Card Games","Puzzles","Model Building","Woodworking","Coding","Robotics","Collecting","Cosplay"
-  ],
-
-  movies: [
-    "Inception","Titanic","Avatar","Frozen","Toy Story","The Matrix","Jurassic Park","Star Wars","Harry Potter","Lord of the Rings",
-    "Marvel","Batman","Spider-Man","Iron Man","The Avengers","The Lion King","Finding Nemo","Up","Wall-E","Shrek",
-    "Minions","Despicable Me","The Incredibles","Coco","Inside Out","Moana","Aladdin","Beauty and the Beast","Mulan","Hercules",
-    "Jaws","Rocky","Terminator","Alien","Predator","Back to the Future","Indiana Jones","Ghostbusters","Die Hard","Home Alone",
-    "The Notebook","La La Land","The Godfather","Pulp Fiction","Forrest Gump","Fight Club","Interstellar","Gladiator","Braveheart","Dune"
-  ],
-
-  jobs: [
-    "Doctor","Nurse","Teacher","Professor","Student","Engineer","Programmer","Developer","Designer","Artist",
-    "Writer","Journalist","Editor","Photographer","Videographer","Actor","Musician","Singer","Dancer","DJ",
-    "Chef","Cook","Baker","Waiter","Barista","Cashier","Manager","CEO","Entrepreneur","Marketer",
-    "Salesperson","Accountant","Banker","Economist","Analyst","Consultant","Lawyer","Judge","Paralegal","Police Officer",
-    "Detective","Firefighter","Paramedic","EMT","Surgeon","Dentist","Veterinarian","Pharmacist","Scientist","Researcher"
-  ],
-
-  nature: [
-    "Rain","Snow","Hail","Sleet","Wind","Breeze","Storm","Thunder","Lightning","Fog",
-    "Cloud","Sky","Sun","Moon","Stars","Rainbow","Dawn","Sunrise","Sunset","Dusk",
-    "Forest","Jungle","Desert","Savanna","Plains","Valley","Canyon","Mountain","Hill","Volcano",
-    "River","Stream","Creek","Lake","Pond","Ocean","Sea","Beach","Coast","Shore",
-    "Island","Waterfall","Glacier","Iceberg","Tundra","Swamp","Marsh","Bog","Reef","Lagoon"
-  ],
-
-  science: [
-    "Robot","AI","Computer","Internet","Algorithm","Code","Program","Software","Hardware","Circuit",
-    "Electricity","Battery","Energy","Power","Magnet","Gravity","Force","Motion","Speed","Velocity",
-    "Atom","Molecule","Cell","DNA","Gene","Protein","Virus","Bacteria","Vaccine","Antibody",
-    "Planet","Star","Galaxy","Universe","Asteroid","Comet","Meteor","Black Hole","Orbit","Telescope",
-    "Microscope","Experiment","Hypothesis","Theory","Data","Research","Analysis","Lab","Discovery","Innovation"
-  ],
-
-  transport: [
-    "Car","Truck","Van","Bus","Taxi","Uber","Train","Subway","Metro","Tram",
-    "Bicycle","Motorcycle","Scooter","Skateboard","Rollerblades","Boat","Ship","Ferry","Yacht","Canoe",
-    "Kayak","Jet Ski","Plane","Airplane","Jet","Helicopter","Glider","Rocket","Spaceship","Shuttle",
-    "Airport","Runway","Terminal","Station","Platform","Ticket","Seat","Wheel","Engine","Motor",
-    "Fuel","Gas","Diesel","Electric","Hybrid","Traffic","Road","Highway","Bridge","Tunnel"
-  ]
-};
-
+function updateImposterPlayerUI() {
+  document.getElementById("imposterPlayerCount").textContent = imposterPlayers;
+  const max = calculateMaxImposters(imposterPlayers);
+  if (imposterCount > max) {
+    imposterCount = max;
+    document.getElementById("imposterCountDisplay").textContent = imposterCount;
+  }
+  document.getElementById("imposterLimitText").textContent = `Max imposters: ${max}`;
+}
 
 function changeImposterPlayers(delta) {
   imposterPlayers = Math.max(3, Math.min(20, imposterPlayers + delta));
-
-  const maxImposters = calculateMaxImposters(imposterPlayers);
-  imposterCount = Math.min(imposterCount, maxImposters);
-
   updateImposterPlayerUI();
-  updateImposterCountUI();
 }
 
-
 function startImposterNames() {
+  imposterNames = [];
+  imposterRoles = [];
+  imposterIndex = 0;
+
   const wrap = document.getElementById("imposterNameInputs");
   wrap.innerHTML = "";
 
   for (let i = 0; i < imposterPlayers; i++) {
     wrap.innerHTML += `<input value="Player ${i + 1}">`;
   }
-
   show("imposter-names");
+  updateImposterLimit(); // Ensure limits update when name screen loads
 }
 
-
 function updateImposterLimit() {
-  const max =
+  const maxLimit =
     imposterPlayers < 6 ? 1 :
     imposterPlayers < 11 ? 2 :
     imposterPlayers < 16 ? 3 : 4;
 
-  imposterCount = Math.min(imposterCount, max);
+  imposterCount = Math.min(imposterCount, maxLimit);
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
   document.getElementById("imposterLimitText").textContent =
-    `Up to ${max} imposter${max > 1 ? "s" : ""} allowed`;
-  
-  const max = calculateMaxImposters(imposterPlayers);
-if (imposterCount > max) {
-  imposterCount = max;
-}
-document.getElementById("imposterCountDisplay").textContent = imposterCount;
-
+    `Up to ${maxLimit} imposter${maxLimit > 1 ? "s" : ""} allowed`;
 }
 
 function changeImposterCount(delta) {
   const maxImposters = calculateMaxImposters(imposterPlayers);
   imposterCount = Math.max(1, Math.min(maxImposters, imposterCount + delta));
-  updateImposterCountUI();
-}
-
-function updateImposterCountUI() {
-  const max = calculateMaxImposters(imposterPlayers);
-
   document.getElementById("imposterCountDisplay").textContent = imposterCount;
-  document.getElementById("imposterLimitText").textContent =
-    `Max imposters for ${imposterPlayers} players: ${max}`;
 }
 
-  function updateImposterButtons() {
-  document.getElementById("imposterMinus").disabled = imposterCount === 1;
+function getRandomImposterWord() {
+  const pools = [...selectedCategories]
+    .flatMap(cat => wordBank[cat] || []);
+  return pools[Math.floor(Math.random() * pools.length)];
 }
 
-  function confirmImposterSetup() {
-  if (imposterCount < 1) {
-    alert("There must be at least one Imposter.");
-    return;
-  }
-
-  startImposterGame();
-}
-  
 function startImposterRoles() {
-  // 1️⃣ Collect names
+  // 1. Collect names
   imposterNames = [...document.querySelectorAll("#imposterNameInputs input")]
     .map(i => i.value || "Player");
 
   const playerCount = imposterNames.length;
-
-  // 2️⃣ Calculate maximum & final imposter count
   const maxImposters = calculateMaxImposters(playerCount);
   const finalImposterCount = Math.min(imposterCount, maxImposters);
 
-  // 3️⃣ Pick the word
-  const words = wordBank[selectedCategory];
+  // 2. Pick Word
   imposterWord = getRandomImposterWord();
+  if(!imposterWord) imposterWord = "Pizza"; // Fallback
 
-
-  // 4️⃣ Initialize roles
+  // 3. Initialize roles
   imposterRoles = Array(playerCount).fill("crew");
 
-  // 5️⃣ ASSIGN IMPOSTERS  ← 🔴 THIS IS WHERE IT GOES
+  // 4. Assign Imposters
   let assigned = 0;
   while (assigned < finalImposterCount) {
     const idx = Math.floor(Math.random() * playerCount);
@@ -1865,36 +1519,14 @@ function startImposterRoles() {
     }
   }
 
-  // 6️⃣ Reset index & start reveal flow
+  // 5. Start
   imposterIndex = 0;
   updateImposterCard();
   show("imposter-role");
 }
 
-
-function showImposterRole() {
-  document.getElementById("imposterCurrentName").textContent =
-    imposterNames[imposterIndex];
-
-  const role = imposterRoles[imposterIndex];
-  const back = document.getElementById("imposterRoleBack");
-
-  back.innerHTML = role === "imposter"
-    ? `<div class="imposter-card"> <h2>IMPOSTER</h2> <p>Blend in. Guess the word.</p> </div>`
-    : `<div class="word-label"> <p>The secret word is…</p> <h2 class="secret-word">${secretWord}</h2> <p>Give related clues.</p> </div>`;
-
-  document.getElementById("imposterFlip").classList.remove("revealed");
-  show("imposter-role");
-}
-
-function toggleImposterFlip() {
-  document.getElementById("imposterFlip").classList.toggle("revealed");
-}
-
- function updateImposterCard() {
-  document.getElementById("imposterCurrentName").textContent =
-    imposterNames[imposterIndex];
-
+function updateImposterCard() {
+  document.getElementById("imposterCurrentName").textContent = imposterNames[imposterIndex];
   const back = document.getElementById("imposterRoleBack");
 
   if (imposterRoles[imposterIndex] === "imposter") {
@@ -1910,24 +1542,12 @@ function toggleImposterFlip() {
         <h2 class="secret-word">${imposterWord}</h2>
       </div>`;
   }
-
   document.getElementById("imposterFlip").classList.remove("revealed");
 }
 
-  
-function startImposterNames() {
-  imposterNames = [];
-  imposterRoles = [];
-  imposterIndex = 0;
-
-  const wrap = document.getElementById("imposterNameInputs");
-  wrap.innerHTML = "";
-
-  for (let i = 0; i < imposterPlayers; i++) {
-    wrap.innerHTML += `<input value="Player ${i + 1}">`;
-  }
-
-  show("imposter-names");
+function toggleImposterFlip() {
+  sounds.flip.play();
+  document.getElementById("imposterFlip").classList.toggle("revealed");
 }
 
 function nextImposterPlayer() {
@@ -1935,31 +1555,121 @@ function nextImposterPlayer() {
   if (imposterIndex < imposterNames.length) {
     updateImposterCard();
   } else {
+    document.getElementById("imposterDiscussionStarter").textContent = imposterNames[Math.floor(Math.random()*imposterNames.length)] + " starts!";
     show("imposter-discussion");
   }
 }
 
 function revealImposter() {
   document.getElementById("imposterWordReveal").textContent = imposterWord;
-
   const imposters = imposterRoles
     .map((r, i) => r === "imposter" ? imposterNames[i] : null)
     .filter(Boolean);
-
-  document.getElementById("imposterList").textContent =
-    imposters.join(", ");
-
+  document.getElementById("imposterList").textContent = imposters.join(", ");
   show("imposter-results");
 }
 
-  
-document.querySelectorAll(".category-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    btn.classList.toggle("active");
-  });
-});
+/* --- UTILS / MISC --- */
+function launchConfetti() {
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti';
+  for (let i = 0; i < 80; i++) {
+    const c = document.createElement('span');
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.animationDelay = Math.random() * 0.4 + 's';
+    wrap.appendChild(c);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 2000);
+}
 
+function showSaboteurInfo() {
+  const el = document.getElementById("sabPopup");
+  if (el) el.classList.remove("hidden");
+}
+
+function closeSaboteurInfo() {
+  const el = document.getElementById("sabPopup");
+  if (el) el.classList.add("hidden");
+}
+
+function showRules() {
+  const el = document.getElementById("rulesPopup");
+  if (el) el.classList.remove("hidden");
+}
+
+function closeRules() {
+  const el = document.getElementById("rulesPopup");
+  if (el) el.classList.add("hidden");
+}
+
+function handleKey(e) {
+  const key = e.key;
+  if (key === "Escape") {
+    closeRules();
+    closeSaboteurInfo();
+    return;
+  }
+  if (isActive("role")) {
+    if (key === " " || key === "Enter") {
+      e.preventDefault();
+      toggleFlip();
+    }
+  }
+  if (isActive("imposter-role")) {
+    if (key === " " || key === "Enter") {
+      e.preventDefault();
+      toggleImposterFlip();
+    }
+  }
+  if (isActive("discussion")) {
+    if (key >= "1" && key <= "9") pulseNumber(+key);
+    if (key === "0") pulseNumber(10);
+    if (key === "Enter") toGuess();
+  }
+  if (isActive("guess")) {
+    if (key >= "1" && key <= "9") makeGuess(+key);
+    if (key === "0") makeGuess(10);
+  }
+  if (isActive("results") && key === "Enter") {
+    playAgain();
+  }
+}
+
+function isActive(id) {
+  const el = document.getElementById(id);
+  return el && el.classList.contains("active");
+}
+
+function pulseNumber(n) {
+  const items = document.querySelectorAll("#scaleBar div");
+  const el = items[n - 1];
+  if (!el) return;
+  el.classList.remove("pulse");
+  el.offsetHeight; 
+  el.classList.add("pulse");
+}
+
+function unlockAudio() {
+  Object.values(sounds).forEach(s => {
+    s.play().catch(()=>{});
+    s.pause();
+    s.currentTime = 0;
+  });
+  document.removeEventListener("click", unlockAudio);
+}
+
+document.addEventListener("click", unlockAudio);
+document.addEventListener("keydown", handleKey);
+
+const likelihoodToggle = document.getElementById("likelihoodToggle");
+if (likelihoodToggle) {
+  likelihoodToggle.addEventListener("change", e => {
+    showLikelihoodHint = e.target.checked;
+  });
+}
 </script>
+    
 <div id="sabPopup" class="popup hidden">
   <div class="popup-content">
     <h3>Saboteur Win Condition</h3>
