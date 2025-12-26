@@ -663,8 +663,41 @@ input{
   color: white;
 }
 
+/* === STRONG CATEGORY SELECTION GLOW === */
+.category-btn.active {
+  background: var(--primary);
+  color: white;
 
-  
+  transform: scale(1.08);
+
+  box-shadow:
+    0 0 0 3px rgba(0,188,212,0.9),
+    0 0 18px rgba(0,188,212,0.85),
+    0 0 36px rgba(0,188,212,0.75),
+    0 0 60px rgba(0,188,212,0.55);
+
+  animation: categoryGlowPulse 1.4s ease-in-out infinite;
+}
+
+/* Smooth but noticeable pulse */
+@keyframes categoryGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(0,188,212,0.85),
+      0 0 20px rgba(0,188,212,0.9),
+      0 0 40px rgba(0,188,212,0.7),
+      0 0 70px rgba(0,188,212,0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(0,188,212,1),
+      0 0 28px rgba(0,188,212,1),
+      0 0 55px rgba(0,188,212,0.85),
+      0 0 90px rgba(0,188,212,0.65);
+  }
+}
+
+
 </style>
 </head>
 
