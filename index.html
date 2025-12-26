@@ -568,14 +568,6 @@ input{
   line-height: 1.25;
 }
 
-
-.category-btn.active {
-  transform: scale(1.07);
-  box-shadow:
-    0 0 0 3px rgba(0,188,212,0.5),
-    0 0 22px rgba(0,188,212,0.85),
-    0 0 42px rgba(0,188,212,0.45);
-}
   #imposterNameInputs input {
   margin-bottom: 18px;
 }
@@ -609,24 +601,6 @@ input{
     transform 0.15s ease,
     box-shadow 0.15s ease,
     background 0.15s ease;
-}
-
-.category-btn.active {
-  transform: scale(1.05);
-  box-shadow: 0 6px 18px rgba(0,188,212,0.35);
-}
-
-.category-btn:active {
-  transform: scale(0.96);
-}
-@keyframes selectPop {
-  0%   { transform: scale(0.95); }
-  60%  { transform: scale(1.08); }
-  100% { transform: scale(1); }
-}
-
-.category-btn.active {
-  animation: selectPop 0.25s ease;
 }
 
  #categoryGrid {
@@ -663,21 +637,6 @@ input{
   color: white;
 }
 
-/* === STRONG CATEGORY SELECTION GLOW === */
-.category-btn.active {
-  background: var(--primary);
-  color: white;
-
-  transform: scale(1.08);
-
-  box-shadow:
-    0 0 0 3px rgba(0,188,212,0.9),
-    0 0 18px rgba(0,188,212,0.85),
-    0 0 36px rgba(0,188,212,0.75),
-    0 0 60px rgba(0,188,212,0.55);
-
-  animation: categoryGlowPulse 1.4s ease-in-out infinite;
-}
 
 /* Smooth but noticeable pulse */
 @keyframes categoryGlowPulse {
@@ -704,6 +663,39 @@ input{
   margin-top: 20px;
 }
 
+  .card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.category-btn.active {
+  background: var(--primary);
+  color: white;
+
+  /* REMOVE SCALE */
+  transform: none;
+
+  box-shadow:
+    0 0 0 3px rgba(0,188,212,0.9),
+    0 0 18px rgba(0,188,212,0.85),
+    0 0 36px rgba(0,188,212,0.75);
+
+  animation: none;
+}
 
 </style>
 </head>
@@ -724,7 +716,7 @@ input{
         🔍 Secret Saboteur
       </button>
       <button onclick="launchImposter()">🕵️ Imposter</button>
-      <button class="game-btn" onclick="show('role-setup')">
+     <button class="game-btn" onclick="resetRoleRoulette(); show('role-setup')">
   🎭 Role Roulette
 </button>
     </div>
@@ -1013,7 +1005,7 @@ input{
 
   <div id="roleResults"></div>
 
-  <button onclick="show('home')">Back to Hub</button>
+  <button onclick="resetRoleRoulette(); show('home')">Back to Hub</button>
 </div>
 <script>
 /* --- DATA --- */
@@ -1892,19 +1884,7 @@ function changeRolePlayers(delta) {
   document.getElementById("rolePlayerCount").textContent = rolePlayerCount;
 }
 
-function startRoleGame() {
-  rolePlayers = [];
-  currentRoleIndex = 0;
 
-  const shuffled = [...roleBank].sort(() => Math.random() - 0.5);
-
-  for (let i = 0; i < rolePlayerCount; i++) {
-    rolePlayers.push(shuffled[i % shuffled.length]);
-  }
-
-  show("role-card");
-  updateRoleCard();
-}
 
 function updateRoleCard() {
   document.getElementById("rolePlayerTitle").textContent =
@@ -2003,6 +1983,11 @@ function startRoleNames() {
   });
 
   show("role-results");
+}
+  function resetRoleRoulette() {
+  roleNames = [];
+  rolePlayers = [];
+  currentRoleIndex = 0;
 }
 
 
