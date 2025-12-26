@@ -697,6 +697,13 @@ input{
   }
 }
 
+  .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
 
 </style>
 </head>
@@ -881,6 +888,7 @@ input{
 </div>
 </div>
     </div> 
+  
 <div class="screen" id="imposter-names">
   <h2>Players & Imposters</h2>
 
@@ -950,30 +958,62 @@ input{
   <h1>Role Roulette</h1>
   <div class="sub">Act the part. Don’t get caught.</div>
 
-  <div class="counter">
-    <button onclick="changeRolePlayers(-1)">−</button>
-    <span id="rolePlayerCount">4</span>
-    <button onclick="changeRolePlayers(1)">+</button>
+ <div class="card">
+    <h2>Players</h2>
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;">
+      <button class="btn-small" onclick="changeRolePlayers(-1)">−</button>
+      <div id="rolePlayerCount" style="font-size:1.4rem;font-weight:700;">3</div>
+      <button class="btn-small" onclick="changeRolePlayers(1)">+</button>
+    </div>
   </div>
 
-  <button onclick="startRoleGame()">Start Game →</button>
+ <div class="stack">
+  <button onclick="startRoleNames()">Start Game →</button>
   <button class="secondary" onclick="show('home')">Back</button>
+</div>
+</div>
+
+  
+<div class="screen" id="role-names">
+  <h1>Player Names</h1>
+  <div id="roleNames"></div>
+  <button onclick="startRoleRoles()">Continue →</button>
 </div>
 
 <!-- ROLE CARD -->
+
 <div class="screen" id="role-card">
   <h2 id="rolePlayerTitle"></h2>
 
-  <div class="card" onclick="flipRoleCard()">
+  <div class="card" onclick="toggleRoleFlip()">
     <div class="card-inner" id="roleCardInner">
       <div class="card-front">Tap to reveal</div>
-      <div class="card-back" id="roleText"></div>
+      <div class="card-back">
+        <div class="label">Your secret role is</div>
+        <div id="roleText"></div>
+      </div>
     </div>
   </div>
 
   <button onclick="nextRolePlayer()">Next Player</button>
 </div>
+  
+<div class="screen" id="role-discussion">
+  <h1>All Roles Assigned</h1>
+  <div class="sub">Discuss and guess who played which role</div>
 
+  <div id="roleGuessList"></div>
+
+  <button onclick="showRoleResults()">Reveal Roles →</button>
+</div>
+
+  <div class="screen" id="role-results">
+  <h1>Roles Revealed</h1>
+
+  <div id="roleResults"></div>
+
+  <button onclick="show('home')">Back to Hub</button>
+</div>
 <script>
 /* --- DATA --- */
 const prompts = [
@@ -1879,16 +1919,21 @@ function flipRoleCard() {
   document.getElementById("roleCardInner").classList.toggle("flipped");
 }
 
-function nextRolePlayer() {
-  currentRoleIndex++;
 
-  if (currentRoleIndex >= rolePlayers.length) {
-    alert("All roles assigned! Start playing 🎭");
-    show("home");
-  } else {
-    updateRoleCard();
+  function buildRoleNameInputs() {
+  roleNames = [];
+  const container = document.getElementById("roleNames");
+  container.innerHTML = "";
+
+  for (let i = 0; i < rolePlayerCount; i++) {
+    const input = document.createElement("input");
+    input.placeholder = `Player ${i + 1}`;
+    input.oninput = () =>
+      roleNames[i] = input.value || `Player ${i + 1}`;
+    container.appendChild(input);
   }
 }
+
 
 </script>
     
