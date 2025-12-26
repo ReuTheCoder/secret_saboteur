@@ -714,9 +714,12 @@ input{
 
     <div class="grid">
       <button onclick="launchSecretSaboteur()">
-        Secret Saboteur
+        🔍 Secret Saboteur
       </button>
-      <button onclick="launchImposter()">Imposter</button>
+      <button onclick="launchImposter()">🕵️ Imposter</button>
+      <button class="game-btn" onclick="show('role-setup')">
+  🎭 Role Roulette
+</button>
     </div>
   </div>
 </div>
@@ -940,6 +943,35 @@ input{
   <button onclick="launchImposter()">↻ Play Again</button>
   <button class="secondary" onclick="show('home')">Back to Hub</button>
 </div>
+</div>
+
+<!-- ROLE ROULETTE SETUP -->
+<div class="screen" id="role-setup">
+  <h1>Role Roulette</h1>
+  <div class="sub">Act the part. Don’t get caught.</div>
+
+  <div class="counter">
+    <button onclick="changeRolePlayers(-1)">−</button>
+    <span id="rolePlayerCount">4</span>
+    <button onclick="changeRolePlayers(1)">+</button>
+  </div>
+
+  <button onclick="startRoleGame()">Start Game →</button>
+  <button class="secondary" onclick="show('home')">Back</button>
+</div>
+
+<!-- ROLE CARD -->
+<div class="screen" id="role-card">
+  <h2 id="rolePlayerTitle"></h2>
+
+  <div class="card" onclick="flipRoleCard()">
+    <div class="card-inner" id="roleCardInner">
+      <div class="card-front">Tap to reveal</div>
+      <div class="card-back" id="roleText"></div>
+    </div>
+  </div>
+
+  <button onclick="nextRolePlayer()">Next Player</button>
 </div>
 
 <script>
@@ -1800,6 +1832,64 @@ if (likelihoodToggle) {
     showLikelihoodHint = e.target.checked;
   });
 }
+
+let rolePlayerCount = 4;
+let rolePlayers = [];
+let currentRoleIndex = 0;
+
+const roleBank = [
+  "Over-Explainer",
+  "Interruptor",
+  "Question Dodger",
+  "Contrarian",
+  "Quiet Observer",
+  "Chaos Agent"
+];
+
+function changeRolePlayers(delta) {
+  rolePlayerCount = Math.max(3, Math.min(12, rolePlayerCount + delta));
+  document.getElementById("rolePlayerCount").textContent = rolePlayerCount;
+}
+
+function startRoleGame() {
+  rolePlayers = [];
+  currentRoleIndex = 0;
+
+  const shuffled = [...roleBank].sort(() => Math.random() - 0.5);
+
+  for (let i = 0; i < rolePlayerCount; i++) {
+    rolePlayers.push(shuffled[i % shuffled.length]);
+  }
+
+  show("role-card");
+  updateRoleCard();
+}
+
+function updateRoleCard() {
+  document.getElementById("rolePlayerTitle").textContent =
+    `Player ${currentRoleIndex + 1}`;
+
+  document.getElementById("roleText").textContent =
+    rolePlayers[currentRoleIndex];
+
+  document.getElementById("roleCardInner").classList.remove("flipped");
+}
+
+function flipRoleCard() {
+  document.getElementById("roleCardInner").classList.toggle("flipped");
+}
+
+function nextRolePlayer() {
+  currentRoleIndex++;
+
+  if (currentRoleIndex >= rolePlayers.length) {
+    alert("All roles assigned! Start playing 🎭");
+    show("home");
+  } else {
+    updateRoleCard();
+  }
+}
+
 </script>
     
 <div id="sabPopup" class="popup hidden">
