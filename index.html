@@ -651,6 +651,16 @@ input{
   font-size: 0.95rem;    /* Slightly smaller text to fit long words */
 }
 
+  .imposter-card.civilian {
+  background: linear-gradient(135deg, #1e88e5, #42a5f5); /* blue */
+  color: white;
+}
+
+.imposter-card.imposter {
+  background: linear-gradient(135deg, #b71c1c, #e53935); /* red */
+  color: white;
+}
+
 
   
 </style>
@@ -1199,7 +1209,9 @@ function nextPlayer(){
 }
 
 function toggleFlip() {
-  sounds.flip.play();
+  if (sounds.flip && sounds.flip.src) {
+    sounds.flip.play().catch(() => {});
+  }
   document.getElementById('flipCard').classList.toggle('revealed');
 }
 
@@ -1592,30 +1604,36 @@ function startImposterRoles() {
 }
 
 function updateImposterCard() {
-  document.getElementById("imposterCurrentName").textContent = imposterNames[imposterIndex];
+  document.getElementById("imposterCurrentName").textContent =
+    imposterNames[imposterIndex];
+
   const back = document.getElementById("imposterRoleBack");
 
   if (imposterRoles[imposterIndex] === "imposter") {
     back.innerHTML = `
-      <div class="imposter-card">
+      <div class="imposter-card imposter">
         <h2>IMPOSTER</h2>
         <p>Blend in. Avoid detection.</p>
       </div>`;
   } else {
     back.innerHTML = `
-      <div class="imposter-card">
+      <div class="imposter-card civilian">
         <div class="word-label">The word is</div>
         <h2 class="secret-word">${imposterWord}</h2>
       </div>`;
   }
+
   document.getElementById("imposterFlip").classList.remove("revealed");
 }
 
+
 function toggleImposterFlip() {
-  sounds.flip.play();
+  if (sounds.flip && sounds.flip.src) {
+    sounds.flip.play().catch(() => {});
+  }
   document.getElementById("imposterFlip").classList.toggle("revealed");
 }
-
+  
 function nextImposterPlayer() {
   imposterIndex++;
   if (imposterIndex < imposterNames.length) {
