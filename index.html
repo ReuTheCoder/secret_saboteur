@@ -970,6 +970,7 @@ input{
  <div class="stack">
   <button onclick="startRoleNames()">Start Game →</button>
   <button class="secondary" onclick="show('home')">Back</button>
+   <button class="info-btn" onclick="openRoleInfo()">?</button>
 </div>
 </div>
 
@@ -1907,7 +1908,7 @@ function startRoleGame() {
 
 function updateRoleCard() {
   document.getElementById("rolePlayerTitle").textContent =
-    `Player ${currentRoleIndex + 1}`;
+  roleNames[currentRoleIndex];
 
   document.getElementById("roleText").textContent =
     rolePlayers[currentRoleIndex];
@@ -1932,6 +1933,76 @@ function flipRoleCard() {
       roleNames[i] = input.value || `Player ${i + 1}`;
     container.appendChild(input);
   }
+}
+
+  function openRoleInfo() {
+  const popup = document.getElementById("roleRulesPopup");
+  if (popup) popup.classList.remove("hidden");
+}
+
+function closeRoleInfo() {
+  const popup = document.getElementById("roleRulesPopup");
+  if (popup) popup.classList.add("hidden");
+}
+
+  let roleNames = [];
+
+function startRoleNames() {
+  roleNames = [];
+  currentRoleIndex = 0;
+
+  buildRoleNameInputs();
+  show("role-names");
+}
+
+  function toggleRoleFlip() {
+  document.getElementById("roleCardInner").classList.toggle("flipped");
+}
+
+  function startRoleRoles() {
+  roleNames = [...document.querySelectorAll("#roleNames input")]
+    .map((i, idx) => i.value || `Player ${idx + 1}`);
+
+  const shuffledRoles = [...roleBank].sort(() => Math.random() - 0.5);
+  rolePlayers = roleNames.map((_, i) => shuffledRoles[i % shuffledRoles.length]);
+
+  currentRoleIndex = 0;
+  updateRoleCard();
+  show("role-card");
+}
+
+  function nextRolePlayer() {
+  currentRoleIndex++;
+
+  if (currentRoleIndex < roleNames.length) {
+    updateRoleCard();
+  } else {
+    buildRoleGuessList();
+    show("role-discussion");
+  }
+}
+
+  function buildRoleGuessList() {
+  const wrap = document.getElementById("roleGuessList");
+  wrap.innerHTML = "";
+
+  roleNames.forEach(name => {
+    wrap.innerHTML += `<div class="card">${name}</div>`;
+  });
+}
+
+  function showRoleResults() {
+  const wrap = document.getElementById("roleResults");
+  wrap.innerHTML = "";
+
+  roleNames.forEach((name, i) => {
+    wrap.innerHTML += `
+      <div class="card">
+        <b>${name}</b>: ${rolePlayers[i]}
+      </div>`;
+  });
+
+  show("role-results");
 }
 
 
@@ -2007,6 +2078,39 @@ function flipRoleCard() {
     </p>
 
     <button onclick="closeImposterRules()">Got it!</button>
+  </div>
+</div>
+
+  <div id="roleRulesPopup" class="popup hidden">
+  <div class="popup-content">
+    <h3>How to Play: Role Roulette</h3>
+
+    <p>
+      Each player secretly receives a <b>behavior role</b>.
+      Play a normal discussion — but act according to your role
+      without making it obvious.
+    </p>
+
+    <p><b>After all roles are revealed:</b></p>
+    <ul>
+      <li>Discuss who you think had each role</li>
+      <li>Assign guesses during the discussion phase</li>
+      <li>Reveal all roles at the end</li>
+    </ul>
+
+    <hr>
+
+    <p><b>Roles</b></p>
+    <ul>
+      <li><b>Over-Explainer</b> — Gives way too much detail</li>
+      <li><b>Interruptor</b> — Frequently cuts others off</li>
+      <li><b>Question Dodger</b> — Avoids answering directly</li>
+      <li><b>Devil’s Advocate</b> — Argues the opposite viewpoint</li>
+      <li><b>Quiet Observer</b> — Speaks as little as possible</li>
+      <li><b>Chaos Agent</b> — Causes confusion however they like</li>
+    </ul>
+
+    <button onclick="closeRoleInfo()">Got it!</button>
   </div>
 </div>
 
