@@ -35,7 +35,8 @@ body{
   padding:24px 16px 40px;
   display:none;
 }
-.screen.active{display:block}
+
+.screen.active { display: block !important; }
 
 .flip-wrap {
   perspective: 1000px;
@@ -1463,41 +1464,58 @@ function changeImposterPlayers(delta) {
 }
 
 function startImposterNames() {
-  console.log("Starting Imposter Setup...");
+  try {
+    console.log("startImposterNames() called");
 
-  // 1. Switch screen IMMEDIATELY so you see feedback
-  show("imposter-names");
+    // ensure imposterPlayers is a number (fall back to 3)
+    let count = Number.isFinite(Number(imposterPlayers)) ? parseInt(imposterPlayers, 10) : 3;
+    if (isNaN(count) || count < 3) count = 3;
 
-  // 2. Safely get the number of players
-  let count = parseInt(imposterPlayers);
-  if (isNaN(count) || count < 3) count = 3;
+    // reset state
+    imposterNames = [];
+    imposterRoles = [];
+    imposterIndex = 0;
 
-  // 3. Reset Game State
-  imposterNames = [];
-  imposterRoles = [];
-  imposterIndex = 0;
+    // build inputs (update DOM first so we don't show an empty screen)
+    const wrap = document.getElementById("imposterNameInputs");
+    if (!wrap) {
+      console.error("Could not find #imposterNameInputs");
+      alert("Unexpected error: UI element missing (imposterNameInputs). Check console.");
+      return;
+    }
 
-  // 4. Generate Inputs
-  const wrap = document.getElementById("imposterNameInputs");
-  if (wrap) {
     let inputsHTML = "";
     for (let i = 0; i < count; i++) {
-      inputsHTML += `<input type="text" value="Player ${i + 1}" placeholder="Player ${i+1}">`;
+      // use name attribute + placeholder to be explicit
+      inputsHTML += `<input type="text" name="imposterName${i}" value="Player ${i + 1}" placeholder="Player ${i+1}">`;
     }
     wrap.innerHTML = inputsHTML;
-  }
 
-  // 5. Update Limits (safely)
-  if (typeof updateImposterLimit === "function") {
-    updateImposterLimit();
-  } else {
-    // Fallback if function is missing
-    const max = Math.ceil(count / 5);
-    const display = document.getElementById("imposterCountDisplay");
-    if(display) display.textContent = "1";
-    imposterCount = 1;
+    // update limits / UI safely (call existing function which is declared later)
+    if (typeof updateImposterLimit === "function") {
+      updateImposterLimit();
+    } else {
+      // fallback — ensure UI shows sane defaults
+      const max = Math.ceil(count / 5);
+      imposterCount = Math.min(Math.max(1, imposterCount || 1), max);
+      const display = document.getElementById("imposterCountDisplay");
+      if (display) display.textContent = imposterCount;
+      const text = document.getElementById("imposterLimitText");
+      if (text) text.textContent = `Max imposters: ${max}`;
+    }
+
+    // small reflow to ensure DOM is painted
+    void wrap.offsetHeight;
+
+    // finally show the screen (after DOM updated)
+    show("imposter-names");
+    console.log("startImposterNames() completed successfully");
+  } catch (err) {
+    console.error("Error in startImposterNames():", err);
+    alert("Something went wrong starting the imposter setup — open devtools console to see details.");
   }
 }
+
 
 function updateImposterLimit() {
   // Logic to determine max imposters based on player count
