@@ -729,6 +729,23 @@ input{
   width: 100%;
 }
 
+  .chaos-box {
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ff7043, #ff5722);
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 16px rgba(255,87,34,0.6);
+}
+
+.chaos-box h3 {
+  margin-bottom: 6px;
+}
+
+.hidden {
+  display: none;
+}
 
 </style>
 </head>
@@ -1007,22 +1024,22 @@ input{
 </div>
 
 <!-- ROLE CARD -->
-
-<div class="screen" id="role-card">
+  <div class="screen" id="role-card">
+  <div class="sub">Pass the device to</div>
   <h2 id="rolePlayerTitle"></h2>
 
- <div class="card big-card" onclick="toggleRoleFlip()">
-  <div class="card-inner" id="roleCardInner">
-    <div class="card-front">
-      <h2>Tap to Reveal</h2>
-    </div>
-    <div class="card-back blue-card">
-      <h3>Your secret role is</h3>
-      <div id="roleText" class="big-text"></div>
+  <div class="flip-wrap">
+    <div class="flip" id="flipCard" onclick="toggleRoleFlip()">
+      <div class="face front">
+        <h2>Tap to Reveal</h2>
+      </div>
+      <div class="face back" id="roleText"></div>
     </div>
   </div>
-</div>
+  
 
+  <button onclick="nextPlayer()">Next Player</button>
+</div>
 
   <button onclick="nextRolePlayer()">Next Player</button>
 </div>
@@ -1031,6 +1048,12 @@ input{
   <h1>All Roles Assigned</h1>
   <div class="sub">Discuss and guess who played which role</div>
   <div id="roleTimer" class="timer">05:00</div>
+  <div id="chaosBox" class="chaos-box hidden">
+  <h3 id="chaosTitle"></h3>
+  <p id="chaosText"></p>
+</div>
+
+<button class="secondary" onclick="triggerChaos()">🎲 Chaos Modifier</button>
 
   <p id="roleDiscussionPrompt" style="text-align:center;font-weight:600;"></p>
 <button class="secondary small-btn" onclick="rerollRolePrompt()">↻ New Prompt</button>
@@ -1940,6 +1963,37 @@ const roleBank = [
   "Devil’s Advocate": "Argue the opposite of the group.",
   "Leader": "Try to control the discussion."
 };
+  
+  const roleChaosModifiers = [
+  {
+    title: "No Questions",
+    text: "For the next minute, nobody is allowed to ask questions."
+  },
+  {
+    title: "One-Word Answers",
+    text: "For the next 3 responses, everyone can only answer with ONE word."
+  },
+  {
+    title: "Spotlight",
+    text: "Everyone must address the same player for the next 2 minutes."
+  },
+  {
+    title: "Reverse Roles",
+    text: "Act like the opposite of your role for 60 seconds."
+  },
+  {
+    title: "Truth Bomb",
+    text: "Each player must say ONE true statement about themselves."
+  },
+  {
+    title: "Silence",
+    text: "No one can speak for 10 seconds. Eye contact only."
+  },
+  {
+    title: "Leader Swap",
+    text: "A random player must lead the discussion for 1 minute."
+  }
+];
 
 function changeRolePlayers(delta) {
   rolePlayerCount = Math.max(3, Math.min(12, rolePlayerCount + delta));
@@ -2115,6 +2169,9 @@ function startRoleTimer() {
       clearInterval(roleTimerInterval);
     }
   }, 1000);
+  setTimeout(() => {
+  triggerChaos();
+}, 100000); // 2.5 minutes
 }
 
 function updateRoleTimer() {
@@ -2136,7 +2193,22 @@ function updateRoleTimer() {
   });
 }
 
+function triggerChaos() {
+  const chaos =
+    roleChaosModifiers[
+      Math.floor(Math.random() * roleChaosModifiers.length)
+    ];
 
+  document.getElementById("chaosTitle").textContent = chaos.title;
+  document.getElementById("chaosText").textContent = chaos.text;
+
+  document.getElementById("chaosBox").classList.remove("hidden");
+}
+
+  function clearChaos() {
+  document.getElementById("chaosBox").classList.add("hidden");
+}
+  
 </script>
     
 <div id="sabPopup" class="popup hidden">
