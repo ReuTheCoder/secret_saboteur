@@ -651,10 +651,12 @@ input{
   font-size: 0.95rem;    /* Slightly smaller text to fit long words */
 }
 
-  .imposter-card.civilian {
-  background: linear-gradient(135deg, #1e88e5, #42a5f5); /* blue */
+ .imposter-card.civilian {
+  background: var(--primary);
   color: white;
+  box-shadow: 0 10px 26px rgba(0,188,212,0.45);
 }
+
 
 .imposter-card.imposter {
   background: linear-gradient(135deg, #b71c1c, #e53935); /* red */
@@ -1027,9 +1029,9 @@ let selectedCategories = new Set(["objects"]); // default
 
 /* --- AUDIO --- */
 const sounds = {
-  flip: new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
-  correct: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA"),
-  wrong: new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQgAAAAA")
+  flip: new Audio("flipcard-91468.mp3"),
+  correct: new Audio("crowd_small_chil_ec049202_9klCwI6.mp3"),
+  wrong: new Audio("buzzer-or-wrong-answer-20582.mp3")
 };
 
 /* --- FLOW NAVIGATION --- */
