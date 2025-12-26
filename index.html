@@ -873,6 +873,9 @@ input{
 
 
   <button onclick="startImposterNames()">Start Game →</button>
+   <div class="intro-info">
+  <button class="info-btn" onclick="showImposterRules()">?</button>
+</div>
 </div>
     </div> 
 <div class="screen" id="imposter-names">
@@ -1722,6 +1725,16 @@ function closeRules() {
   if (el) el.classList.add("hidden");
 }
 
+function showImposterRules() {
+  const el = document.getElementById("imposterRulesPopup");
+  if (el) el.classList.remove("hidden");
+}
+
+function closeImposterRules() {
+  const el = document.getElementById("imposterRulesPopup");
+  if (el) el.classList.add("hidden");
+}
+
 function handleKey(e) {
   const key = e.key;
   if (key === "Escape") {
@@ -1830,5 +1843,37 @@ if (likelihoodToggle) {
   </div>
 </div>
   
+  <div id="imposterRulesPopup" class="popup hidden">
+  <div class="popup-content">
+    <h3>How to Play: Imposter</h3>
+
+    <p>
+      One secret word is chosen.
+      Most players know the word — but one or more are <b>Imposters</b>.
+    </p>
+
+    <p>
+      Players take turns asking and answering questions about the word
+      without saying it directly.
+    </p>
+
+    <p>
+      <b>Imposters</b> do not know the word.
+      They must blend in and avoid being caught.
+    </p>
+
+    <p>
+      The group discusses and tries to identify the Imposter(s).
+    </p>
+
+    <p>
+      The Imposter wins if they survive undetected.
+      The group wins if they identify all Imposters.
+    </p>
+
+    <button onclick="closeImposterRules()">Got it!</button>
+  </div>
+</div>
+
 </body>
 </html>
