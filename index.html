@@ -995,6 +995,10 @@ input{
   <h1>All Roles Assigned</h1>
   <div class="sub">Discuss and guess who played which role</div>
 
+  <p id="roleDiscussionPrompt" style="text-align:center;font-weight:600;"></p>
+<button class="secondary small-btn" onclick="rerollRolePrompt()">↻ New Prompt</button>
+
+
   <div id="roleGuessList"></div>
 
   <button onclick="showRoleResults()">Reveal Roles →</button>
@@ -1127,6 +1131,7 @@ let submitWasDisabled = true;
 let showLikelihoodHint = false;
 let discussionStarterIndex = null;
 let selectedCategories = new Set(["objects"]); // default
+let roleGuesses = {}; // { playerName: guessedRole }
 
 /* --- AUDIO --- */
 const sounds = {
@@ -1878,6 +1883,14 @@ const roleBank = [
   "Quiet Observer",
   "Chaos Agent"
 ];
+  const roleDiscussionPrompts = [
+  "Who was acting the strangest?",
+  "Who talked the most? The least?",
+  "Who felt like they were hiding something?",
+  "Who broke character?",
+  "Who felt TOO natural in their role?",
+  "Who tried to control the conversation?"
+];
 
 function changeRolePlayers(delta) {
   rolePlayerCount = Math.max(3, Math.min(12, rolePlayerCount + delta));
@@ -1957,37 +1970,81 @@ function startRoleNames() {
   if (currentRoleIndex < roleNames.length) {
     updateRoleCard();
   } else {
-    buildRoleGuessList();
-    show("role-discussion");
-  }
+  buildRoleGuessList();
+  showRoleDiscussionPrompt(); // ✅ ADD THIS
+  show("role-discussion");
+}
 }
 
-  function buildRoleGuessList() {
+ function buildRoleGuessList() {
   const wrap = document.getElementById("roleGuessList");
   wrap.innerHTML = "";
+  roleGuesses = {};
 
   roleNames.forEach(name => {
-    wrap.innerHTML += `<div class="card">${name}</div>`;
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const label = document.createElement("b");
+    label.textContent = name;
+
+    const select = document.createElement("select");
+    select.style.marginTop = "10px";
+
+    roleBank.forEach(role => {
+      const opt = document.createElement("option");
+      opt.value = role;
+      opt.textContent = role;
+      select.appendChild(opt);
+    });
+
+    select.onchange = () => {
+      roleGuesses[name] = select.value;
+    };
+
+    card.appendChild(label);
+    card.appendChild(select);
+    wrap.appendChild(card);
   });
 }
+
 
   function showRoleResults() {
   const wrap = document.getElementById("roleResults");
   wrap.innerHTML = "";
 
   roleNames.forEach((name, i) => {
+    const guessed = roleGuesses[name] || "No guess";
+
     wrap.innerHTML += `
       <div class="card">
-        <b>${name}</b>: ${rolePlayers[i]}
-      </div>`;
+        <b>${name}</b><br>
+        Actual: <strong>${rolePlayers[i]}</strong><br>
+        Guessed: ${guessed}
+      </div>
+    `;
   });
 
   show("role-results");
 }
+
   function resetRoleRoulette() {
   roleNames = [];
   rolePlayers = [];
   currentRoleIndex = 0;
+}
+
+  function showRoleDiscussionPrompt() {
+  const p =
+    roleDiscussionPrompts[
+      Math.floor(Math.random() * roleDiscussionPrompts.length)
+    ];
+
+  document.getElementById("roleDiscussionPrompt").textContent = p;
+}
+
+function rerollRolePrompt() {
+  showRoleDiscussionPrompt();
 }
 
 
