@@ -697,6 +697,39 @@ input{
   animation: none;
 }
 
+  .timer {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: var(--primary);
+  margin: 12px 0;
+  text-align: center;
+}
+
+.role-reminders {
+  margin-top: 14px;
+  font-size: 0.95em;
+  opacity: 0.9;
+}
+.role-reminder {
+  margin: 6px 0;
+}
+.blue-card {
+  background: linear-gradient(145deg, #00bcd4, #0097a7);
+  color: white;
+}
+.big-card {
+  width: 90%;
+  max-width: 380px;
+}
+.big-text {
+  font-size: 2em;
+  margin-top: 10px;
+}
+  .card select {
+  width: 100%;
+}
+
+
 </style>
 </head>
 
@@ -978,15 +1011,18 @@ input{
 <div class="screen" id="role-card">
   <h2 id="rolePlayerTitle"></h2>
 
-  <div class="card" onclick="toggleRoleFlip()">
-    <div class="card-inner" id="roleCardInner">
-      <div class="card-front">Tap to reveal</div>
-      <div class="card-back">
-        <div class="label">Your secret role is</div>
-        <div id="roleText"></div>
-      </div>
+ <div class="card big-card" onclick="toggleRoleFlip()">
+  <div class="card-inner" id="roleCardInner">
+    <div class="card-front">
+      <h2>Tap to Reveal</h2>
+    </div>
+    <div class="card-back blue-card">
+      <h3>Your secret role is</h3>
+      <div id="roleText" class="big-text"></div>
     </div>
   </div>
+</div>
+
 
   <button onclick="nextRolePlayer()">Next Player</button>
 </div>
@@ -994,9 +1030,11 @@ input{
 <div class="screen" id="role-discussion">
   <h1>All Roles Assigned</h1>
   <div class="sub">Discuss and guess who played which role</div>
+  <div id="roleTimer" class="timer">05:00</div>
 
   <p id="roleDiscussionPrompt" style="text-align:center;font-weight:600;"></p>
 <button class="secondary small-btn" onclick="rerollRolePrompt()">↻ New Prompt</button>
+  <div id="roleReminders" class="role-reminders"></div>
 
 
   <div id="roleGuessList"></div>
@@ -1884,13 +1922,24 @@ const roleBank = [
   "Chaos Agent"
 ];
   const roleDiscussionPrompts = [
-  "Who was acting the strangest?",
-  "Who talked the most? The least?",
-  "Who felt like they were hiding something?",
-  "Who broke character?",
-  "Who felt TOO natural in their role?",
-  "Who tried to control the conversation?"
+   "Describe your ideal weekend — go!",
+  "Tell the group about a time you embarrassed yourself.",
+  "What is your most controversial opinion (keep it light)?",
+  "If you had to lie about one thing right now, what would it be?",
+  "What is something you secretly judge people for?",
+  "Tell a story — true or fake, we won’t know yet.",
+  "Convince the group you are the most trustworthy person here.",
+  "Defend a terrible opinion like you believe it."
 ];
+
+  const roleDescriptions = {
+  "Liar": "Lie confidently and avoid being caught.",
+  "Over-Explainer": "Give way too much detail.",
+  "Silent Type": "Speak as little as possible.",
+  "Interruptor": "Cut people off often.",
+  "Devil’s Advocate": "Argue the opposite of the group.",
+  "Leader": "Try to control the discussion."
+};
 
 function changeRolePlayers(delta) {
   rolePlayerCount = Math.max(3, Math.min(12, rolePlayerCount + delta));
@@ -1971,7 +2020,9 @@ function startRoleNames() {
     updateRoleCard();
   } else {
   buildRoleGuessList();
-  showRoleDiscussionPrompt(); // ✅ ADD THIS
+  showRoleDiscussionPrompt();
+  startRoleTimer(); 
+  buildRoleReminders();
   show("role-discussion");
 }
 }
@@ -1989,7 +2040,8 @@ function startRoleNames() {
     label.textContent = name;
 
     const select = document.createElement("select");
-    select.style.marginTop = "10px";
+    select.style.marginTop = "14px";
+select.style.padding = "6px";
 
     roleBank.forEach(role => {
       const opt = document.createElement("option");
@@ -2045,6 +2097,43 @@ function startRoleNames() {
 
 function rerollRolePrompt() {
   showRoleDiscussionPrompt();
+}
+
+let roleTimerInterval;
+let roleTimeRemaining = 300; // 5 minutes
+
+function startRoleTimer() {
+  clearInterval(roleTimerInterval);
+  roleTimeRemaining = 300;
+  updateRoleTimer();
+
+  roleTimerInterval = setInterval(() => {
+    roleTimeRemaining--;
+    updateRoleTimer();
+
+    if (roleTimeRemaining <= 0) {
+      clearInterval(roleTimerInterval);
+    }
+  }, 1000);
+}
+
+function updateRoleTimer() {
+  const min = String(Math.floor(roleTimeRemaining / 60)).padStart(2, "0");
+  const sec = String(roleTimeRemaining % 60).padStart(2, "0");
+  document.getElementById("roleTimer").textContent = `${min}:${sec}`;
+}
+
+  function buildRoleReminders() {
+  const wrap = document.getElementById("roleReminders");
+  wrap.innerHTML = "<h3>Role Reminders</h3>";
+
+  roleBank.forEach(role => {
+    wrap.innerHTML += `
+      <div class="role-reminder">
+        <b>${role}</b>: ${roleDescriptions[role]}
+      </div>
+    `;
+  });
 }
 
 
