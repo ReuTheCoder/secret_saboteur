@@ -13,5 +13,10 @@ The Guesser must guess who they think the Saboteur is before guessing the secret
 
 Inspired by Rabble Game's "Bot or Not"
 
-Things to Add:
-- Chaos modifiers to role roulette
+Future Updates:
+
+Role Roulette -
+- Secret chaos (only some players see it) / role aware chaos
+- Stackable chaos rules
+- Chaos that changes prompts mid-round
+- Better prompts
